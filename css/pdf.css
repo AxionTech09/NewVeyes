@@ -1,0 +1,25 @@
+.marginTop {margin-top: -20px;}
+.kv-heading-1 {font-size: 16px;}
+table th, table td {padding: 5px; font-size: 11px !important;}
+.company-name {font-size: 13px !important; padding-bottom: 8px !important;}
+.tilte {font-size: 16px !important;}
+.font-weight-bold {font-weight: bold;}
+.font-size-max {font-size: 22px;}
+.font-weight-500 {font-weight: 500} 
+.inr-sign::after {content:"\20B9";}
+.inr-sign::before {content:"\20B9";}
+.pull-right {float:right;}
+.pull-left {float:left;}
+.clearfix::after {clear: both; content: ""; display: table;}
+h4.header-text {color: #0f62aa !important; font-weight: bold; font-size: 23px !important; padding-top: 8px !important; }
+.header-logo {margin-left: 62%;}
+.borderNone {border: unset;}
+.border-topNone {border-top: unset;}
+.border-bottomNone {border-bottom: unset;}
+table td.padding-bottomNone {padding-bottom: 0 !important;}
+.summaryTable { border:1px solid #000 !important;}
+.borderSide {border-right:1px solid #000 !important;border-left:1px solid #000 !important;}
+table { border:1px solid #000 !important;}
+td.borderSide {border-right:1px solid #000 !important;border-left:1px solid #000 !important;}
+.text-underline {text-decoration: underline;}
+.side-heading {margin-bottom: 8px;}

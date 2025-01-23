@@ -1,0 +1,201 @@
+<?php
+
+namespace app\models;
+use yii\helpers\ArrayHelper;
+
+use Yii;
+
+/**
+ * This is the model class for table "axion_claimsurvey_history".
+ *
+ * @property integer $id
+ * @property integer $preinspection_id
+ * @property integer $referenceNo
+ * @property integer $insurerName
+ * @property integer $insurerDivision
+ * @property integer $insurerBranch
+ * @property string $intimationDate
+ * @property integer $callerName
+ * @property string $callerMobileNo
+ * @property string $callerDetails
+ * @property string $insuredName
+ * @property string $insuredMobile
+ * @property string $contactPersonMobileNo
+ * @property string $insuredAddress
+ * @property string $registrationNo
+ * @property string $engineNo
+ * @property string $chassisNo
+ * @property string $vehicleType
+ * @property string $vehicleTypeRadio
+ * @property integer $makeId
+ * @property integer $modelId
+ * @property integer $variantId
+ * @property integer $manufacturingYear
+ * @property string $intimationRemarks
+ * @property integer $cityId
+ * @property integer $townId
+ * @property integer $extraKM
+ * @property string $surveyLocation
+ * @property integer $surveyorName
+ * @property string $sendLink
+ * @property string $surveyorAppointDateTime
+ * @property string $rescheduleReason
+ * @property string $rescheduleDateTime
+ * @property string $rescheduleReason1
+ * @property string $rescheduleDateTime1
+ * @property string $inspectionType
+ * @property integer $paymentMode
+ * @property integer $status
+ * @property string $customerAppointDateTime
+ * @property string $remarks
+ * @property integer $cancellationReason
+ * @property string $cashCollection
+ * @property string $completedSurveyDateTime
+ * @property integer $userId
+ * @property integer $followupReason
+ * @property string $followupRemainder
+ * @property string $followupUpdatedDateTime
+ * @property string $followupUpdatedBy
+ * @property string $ro
+ * @property string $created_on
+ */
+class AxionClaimsurveyHistory extends \yii\db\ActiveRecord
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'axion_claimsurvey_history';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['id', 'referenceNo', 'manufacturingYear', 'cityId', 'townId', 'extraKM', 'surveyorName', 'paymentMode', 'status', 'cancellationReason', 'userId', 'followupReason', 'preinspection_id','insurerName', 'insurerDivision', 'insurerBranch', 'callerName', 'makeId', 'modelId', 'variantId'], 'integer'],
+            [['intimationDate', 'surveyorAppointDateTime', 'rescheduleDateTime', 'rescheduleDateTime1', 'customerAppointDateTime', 'completedSurveyDateTime', 'followupRemainder', 'followupUpdatedDateTime', 'created_on'], 'safe'],
+            [['userId'], 'required'],
+            [['callerDetails', 'insuredName', 'followupUpdatedBy'], 'string', 'max' => 100],
+            [['callerMobileNo', 'insuredMobile', 'contactPersonMobileNo'], 'string', 'max' => 12],
+            [['insuredAddress', 'intimationRemarks', 'surveyLocation', 'rescheduleReason', 'rescheduleReason1', 'remarks', 'ro'], 'string', 'max' => 255],
+            [['registrationNo', 'engineNo', 'chassisNo', 'inspectionType'], 'string', 'max' => 50],
+            [['vehicleType'], 'string', 'max' => 30],
+            [['vehicleTypeRadio'], 'string', 'max' => 4],
+            [['sendLink'], 'string', 'max' => 3],
+            [['cashCollection'], 'string', 'max' => 15]
+        ];
+    }
+    
+    public function getValuatorUser()
+    {
+        return $this->hasOne(MasterFieldexecutives::className(), ['id' => 'surveyorName']);
+    }
+    
+    public function getCancelReasonsvalue()
+    {
+        $cancelReasonList= [
+                ['id' => '99', 'name' => 'Customer contact number is incorrect'],
+                ['id' => '89', 'name' => 'Customer did not co-operate with the field executive'],
+                ['id' => '100', 'name' => 'Customer is not interested'],
+                ['id' => '87', 'name' => 'Customer is not picking the phone/ phone is switched off & informed to the concerned insurer regarding the same'],
+                ['id' => '98', 'name' => 'Customer refused to pay the PI and (or) conveyance fees'],
+                ['id' => '94', 'name' => 'Customer was unable to confirm the location of the vehicle'],
+                ['id' => '96', 'name' => 'Dummy/ testing lead'],
+                ['id' => '97', 'name' => 'Inspection already done by other PI agency'],
+                ['id' => '95', 'name' => 'Insurer asked to cancel the case'],
+                ['id' => '101', 'name' => 'Location not in scope'],
+                ['id' => '93', 'name' => 'New reference number generated for this lead'],
+                ['id' => '88', 'name' => 'Repeat request'],
+                ['id' => '102', 'name' => 'Vehicle not available'],
+                ['id' => '90', 'name' => 'Vehicle/ customer is out of station'],
+                ['id' => '92', 'name' => 'Wrong lead generated by the field executive'],
+              ];
+        $cancelReasonArray = ArrayHelper::map($cancelReasonList, 'id', 'name');
+        return $cancelReasonArray;
+    }
+    
+    public function getFollowupValue()
+    {
+        $followupReasonList= [
+                ['id' => '0', 'name' => '-Select-'],  
+                ['id' => '1', 'name' => 'CALLER AND CUSTOMER NOT PICK THE CALL'],
+                ['id' => '2', 'name' => 'CUSTOMER NOT PICK THE CALL'],
+                ['id' => '3', 'name' => 'CUSTOMER DISCONNECT THE CALL'],
+                ['id' => '4', 'name' => 'CUSTOMER NUMBER SWITCH OF / NOT REACHABLE'],
+                ['id' => '5', 'name' => 'CUSTOMER OUT OF STATION'],
+                ['id' => '6', 'name' => 'CUSTOMER NOT CO - OPERATE'],
+                ['id' => '7', 'name' => 'CUSTOMER NOT INTERESTED'],
+                ['id' => '8', 'name' => 'CUSTOMER NOT AVAILABLE'],
+                ['id' => '9', 'name' => 'CUSTOMER NUMBER WRONG'],
+                ['id' => '10', 'name' => 'CUSTOMER WILL CALL BACK'],
+                ['id' => '11', 'name' => 'INSPECTION ALREADY DONE BY ANOTHER AGENCY'],
+                ['id' => '12', 'name' => 'VEHICLE NOT AVAILABLE'],
+                ['id' => '13', 'name' => 'NOT SERVICING AREA'],
+                ['id' => '14', 'name' => 'CUSTOMER REFUSE FOR INSPECTION CHARGES'],
+              ];
+        $followupReasonArray = ArrayHelper::map($followupReasonList, 'id', 'name');
+        return $followupReasonArray;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'referenceNo' => 'Reference No',
+            'insurerName' => 'Insurer Name',
+            'insurerDivision' => 'Insurer Division',
+            'insurerBranch' => 'Insurer Branch',
+            'intimationDate' => 'Intimation Date',
+            'callerName' => 'Caller Name',
+            'callerMobileNo' => 'Caller Mobile No',
+            'callerDetails' => 'Caller Details',
+            'insuredName' => 'Insured Name',
+            'insuredMobile' => 'Insured Mobile',
+            'contactPersonMobileNo' => 'Contact Person Mobile No',
+            'insuredAddress' => 'Insured Address',
+            'registrationNo' => 'Registration No',
+            'engineNo' => 'Engine No',
+            'chassisNo' => 'Chassis No',
+            'vehicleType' => 'Vehicle Type',
+            'vehicleTypeRadio' => 'Vehicle Type Radio',
+            'makeId' => 'Make',
+            'modelId' => 'Model',
+            'variantId' => 'variantId',
+            'manufacturingYear' => 'Manufacturing Year',
+            'intimationRemarks' => 'Intimation Remarks',
+            'cityId' => 'City ID',
+            'townId' => 'Town ID',
+            'extraKM' => 'Extra Km',
+            'surveyLocation' => 'Survey Location',
+            'surveyorName' => 'Surveyor Name',
+            'sendLink' => 'Send Link',
+            'surveyorAppointDateTime' => 'Surveyor Appoint Date Time',
+            'rescheduleReason' => 'Reschedule Reason',
+            'rescheduleDateTime' => 'Reschedule Date Time',
+            'rescheduleReason1' => 'Reschedule Reason1',
+            'rescheduleDateTime1' => 'Reschedule Date Time1',
+            'inspectionType' => 'Inspection Type',
+            'paymentMode' => 'Payment Mode',
+            'status' => 'Status',
+            'customerAppointDateTime' => 'Customer Appoint Date Time',
+            'remarks' => 'Remarks',
+            'cancellationReason' => 'Cancellation Reason',
+            'cashCollection' => 'Cash Collection',
+            'completedSurveyDateTime' => 'Completed Survey Date Time',
+            'userId' => 'User ID',
+            'followupReason' => 'Followup Reason',
+            'followupRemainder' => 'Followup Remainder',
+            'followupUpdatedDateTime' => 'Followup Updated Date Time',
+            'followupUpdatedBy' => 'Followup Updated By',
+            'ro' => 'Ro',
+            'preinspection_id' => 'Preinspection ID',
+            'created_on' => 'Created On',
+        ];
+    }
+}

@@ -1,0 +1,63 @@
+# yii console commands
+/yii
+/yii_test
+/yii_test.bat
+
+# phpstorm project files
+.idea
+
+# netbeans project files
+nbproject
+
+# zend studio for eclipse project files
+.buildpath
+.project
+.settings
+
+# windows thumbnail cache
+Thumbs.db
+
+# composer vendor dir
+/vendor
+
+# composer itself is not needed
+composer.phar
+
+# Mac DS_Store Files
+.DS_Store
+
+# phpunit itself is not needed
+phpunit.phar
+# local phpunit config
+/phpunit.xml
+
+# vagrant runtime
+/.vagrant
+# avoid node
+/node
+
+# other folders
+adtest
+bidspire.in
+smmscript
+ico
+frontend/web/photos
+frontend/web/posts
+backend/web/ads
+
+
+# other files
+/vendor.zip
+/node.zip
+/api.zip
+/console.zip
+/.bowerrc.zip
+frontend/assets.zip
+frontend/controllers.zip
+/ziAuStyp
+/zinO3JIK
+/ziYqK8EG
+frontend/ziTfDaiF
+landing_page/edumetrix/img/edumetrix-video.mp4
+api/mobileapi/newsfeed/php_errorlog
+api/mobileapi.zip
