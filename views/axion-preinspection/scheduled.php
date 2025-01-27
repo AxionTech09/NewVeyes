@@ -189,6 +189,43 @@ $gridColumns = [
     ],
 
     [
+        'attribute' => 'WEB LINK',
+        'vAlign' => 'middle',
+        'headerOptions'=>['style'=>'border: 2px #000 solid;background-color:#480155 !important; color: white !important;padding-right:10px;'],
+        'format' => 'raw',
+        'value' => function ($model) {
+            $url = Yii::$app->urlManager->createAbsoluteUrl(['/axion-preinspection/vehicleqc', 'id' => $model->id, 'page' => 'completed']);
+            $buttonId = 'copy-webbutton-' . $model->id;
+            $messageId = 'copy-message-' . $model->id;
+            return '<button id="' . $buttonId . '" class="btn btn-primary btn-sm" style="color: white; background-color: #17a2b8; border-color: #17a2b8;">Web</button>
+                    <style>
+                        #' . $buttonId . ':hover {
+                            background-color: #007bff;
+                            color: white;
+                        }
+                    </style>
+                    <script>
+                        document.getElementById("' . $buttonId . '").addEventListener("click", function() {
+                            var urlInput = document.createElement("input");
+                            urlInput.value = "' . $url . '";
+                            document.body.appendChild(urlInput);
+                            urlInput.select();
+                            document.execCommand("copy");
+                            document.body.removeChild(urlInput);
+                            
+                            var button = document.getElementById("' . $buttonId . '");
+                            
+                            button.textContent = "Copied";
+                            
+                            setTimeout(function() {
+                                button.textContent = "Web";
+                            }, 1000);
+                        });
+                    </script>';
+        },
+    ],
+
+    [
         'attribute'=>'intimationDate',
         'vAlign'=>'middle',
         'headerOptions'=>['style'=>'border: 2px #000 solid;background-color:#480155;padding-right:10px;'],
