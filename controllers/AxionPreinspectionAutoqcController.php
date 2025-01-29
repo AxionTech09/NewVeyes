@@ -2828,7 +2828,7 @@ return $html;
                             if (file_exists($qcuploadFile)){
                                 $Image = sprintf('./qcphotos/%s',$upload->image);
                             }else{
-                                $Image = 'https://axion-veyes.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+                                $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
                             }
                             if($file == 'vehicleVideo'){
                                 $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
@@ -3088,6 +3088,16 @@ return $html;
                         $file_contents = file_get_contents($file_path);
                         $base64_encoded = base64_encode($file_contents);
 
+                        // Configure AWS SDK credentials
+                        $config = [
+                            'version' => 'latest',
+                            'region' => 'ap-south-1',
+                            'credentials' => [
+                                'key' => 'AKIA6JKEX3CUZERJWEAP',
+                                'secret' => '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',
+                            ],
+                        ];
+                        
                         $textractClient = new \Aws\Textract\TextractClient($config);
                         
                         try {
@@ -3230,7 +3240,12 @@ return $html;
     
                         // Configure AWS SDK credentials
                         $config = [
-                            
+                            'version' => 'latest',
+                            'region' => 'ap-south-1',
+                            'credentials' => [
+                                'key' => 'AKIA6JKEX3CUZERJWEAP',
+                                'secret' => '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',
+                            ],
                         ];
     
                         $textractClient = new \Aws\Textract\TextractClient($config);
@@ -10126,7 +10141,7 @@ protected function updateQc1($preModel,$updateType)
                             if (file_exists($qcuploadFile)){
                                 $Image = sprintf('./qcphotos/%s',$upload->image);
                             }else{
-                                $Image = 'https://axion-veyes.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+                                $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
                             }
                             if($file == 'vehicleVideo'){
                                 $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
@@ -11190,7 +11205,7 @@ protected function updateQc1($preModel,$updateType)
                            if (file_exists($qcuploadFile)){
                                $Image = sprintf('./qcphotos/%s',$upload->image);
                            }else{
-                               $Image = 'https://axion-veyes.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+                               $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
                            }
                            if($file == 'vehicleVideo'){
                                $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);

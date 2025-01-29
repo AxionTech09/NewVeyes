@@ -15,4 +15,4 @@ RewriteRule . index.php
 
 RewriteCond %{HTTP_HOST} ^veyes\.axionpcs\.in$ [NC]
 RewriteCond %{REQUEST_URI} ^/qcphotos/(.+)\.mp4$ [NC]
-RewriteRule ^(.*)$ https://axion-veyes.s3.ap-south-1.amazonaws.com/qcphotos/%1.mp4 [L,R=301]
+RewriteRule ^(.*)$ https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/%1.mp4 [L,R=301]
