@@ -3087,15 +3087,14 @@ return $html;
                        
                         $file_contents = file_get_contents($file_path);
                         $base64_encoded = base64_encode($file_contents);
-                        $key = \Yii::$app->params['awskey'];
-                        $secret = \Yii::$app->params['awssecret'];
+
                         // Configure AWS SDK credentials
                         $config = [
                             'version' => 'latest',
                             'region' => 'ap-south-1',
                             'credentials' => [
-                                'key' => $key,
-                                'secret' => $secret,
+                                'key' => 'AKIA6JKEX3CUZERJWEAP',
+                                'secret' => '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',
                             ],
                         ];
                         
@@ -3238,17 +3237,14 @@ return $html;
                         $fourwheelerModel = AxionClaimsurveyFourwheeler::find()->where(['preinspection_id' => $claimsurveyModel->id])->one();
                         $file_contents = file_get_contents($file_path);
                         $base64_encoded = base64_encode($file_contents);
-                        
-                        $key = \Yii::$app->params['awskey'];
-                        $secret = \Yii::$app->params['awssecret'];
-
+    
                         // Configure AWS SDK credentials
                         $config = [
                             'version' => 'latest',
                             'region' => 'ap-south-1',
                             'credentials' => [
-                                'key' => $key,
-                                'secret' => $secret,
+                                'key' => 'AKIA6JKEX3CUZERJWEAP',
+                                'secret' => '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',
                             ],
                         ];
     
