@@ -4,366 +4,366 @@ use app\models\AxionPreinspectionBilling;
 
 setlocale(LC_MONETARY, 'en_IN');
 
-//$company = (isset($model->callerCompany)) ? $model->callerCompany : '';
-//$companyName = ($company && isset($company->companyName)) ? $company->companyName : '';
-//$companyAddress = ($company && isset($company->billingAddress)) ? $company->billingAddress : '';
+$company = (isset($model->callerCompany)) ? $model->callerCompany : '';
+$companyName = ($company && isset($company->companyName)) ? $company->companyName : '';
+$companyAddress = ($company && isset($company->billingAddress)) ? $company->billingAddress : '';
 
 $billDetails = isset($model->billDetails) ? json_decode($model->billDetails) : '';
 $companyId = (isset($company->companyId)) ? $company->companyId : $company->id;
 
-if ($companyId != 10) {
-    $perKm = ($company && isset($company->rateConveyance)) ? $company->rateConveyance : 0;
-    $per2w = ($company && isset($company->rate2Wheeler)) ? $company->rate2Wheeler : 0;
-    $per3w = ($company && isset($company->rate3Wheeler)) ? $company->rate3Wheeler : 0;
-    $per4w = ($company && isset($company->rate4Wheeler)) ? $company->rate4Wheeler : 0;
-    $perCw = ($company && isset($company->rateCommercial)) ? $company->rateCommercial : 0;
-    if($model->id == 8820){
-        $totalKm = 16218;
-        $total2W = 0;
-        $total3W = 0;
-        $total4W = 818;
-        $totalCW = 218;
-    }elseif ($model->id == 8118) {
-        $totalKm = 677;
-        $total2W = 0;
-        $total3W = 0;
-        $total4W = 59;
-        $totalCW = 3;
-    }elseif ($model->id == 8116) {
-        $totalKm = 26705;
-        $total2W = 0;
-        $total3W = 0;
-        $total4W = 253;
-        $totalCW = 171;
-    }elseif ($model->id == 8821) {
-        $totalKm = 13739;
-        $total2W = 0;
-        $total3W = 0;
-        $total4W = 977;
-        $totalCW = 200;
-    }
-    elseif ($model->id == 11498) {
-        $totalKm = 6904;
-        $total2W = 0;
-        $total3W = 0;
-        $total4W = 235;
-        $totalCW = 13;
-    }
-    else{
-        $totalKm = ($billDetails && $billDetails->totalKm) ? $billDetails->totalKm : 0;
-        $total2W = ($billDetails && $billDetails->total2W) ? $billDetails->total2W : 0;
-        $total3W = ($billDetails && $billDetails->total3W) ? $billDetails->total3W : 0;
-        $total4W = ($billDetails && $billDetails->total4W) ? $billDetails->total4W : 0;
-        $totalCW = ($billDetails && $billDetails->totalCW) ? $billDetails->totalCW : 0;
-    }
+// if ($companyId != 10) {
+//     $perKm = ($company && isset($company->rateConveyance)) ? $company->rateConveyance : 0;
+//     $per2w = ($company && isset($company->rate2Wheeler)) ? $company->rate2Wheeler : 0;
+//     $per3w = ($company && isset($company->rate3Wheeler)) ? $company->rate3Wheeler : 0;
+//     $per4w = ($company && isset($company->rate4Wheeler)) ? $company->rate4Wheeler : 0;
+//     $perCw = ($company && isset($company->rateCommercial)) ? $company->rateCommercial : 0;
+//     if($model->id == 8820){
+//         $totalKm = 16218;
+//         $total2W = 0;
+//         $total3W = 0;
+//         $total4W = 818;
+//         $totalCW = 218;
+//     }elseif ($model->id == 8118) {
+//         $totalKm = 677;
+//         $total2W = 0;
+//         $total3W = 0;
+//         $total4W = 59;
+//         $totalCW = 3;
+//     }elseif ($model->id == 8116) {
+//         $totalKm = 26705;
+//         $total2W = 0;
+//         $total3W = 0;
+//         $total4W = 253;
+//         $totalCW = 171;
+//     }elseif ($model->id == 8821) {
+//         $totalKm = 13739;
+//         $total2W = 0;
+//         $total3W = 0;
+//         $total4W = 977;
+//         $totalCW = 200;
+//     }
+//     elseif ($model->id == 11498) {
+//         $totalKm = 6904;
+//         $total2W = 0;
+//         $total3W = 0;
+//         $total4W = 235;
+//         $totalCW = 13;
+//     }
+//     else{
+//         $totalKm = ($billDetails && $billDetails->totalKm) ? $billDetails->totalKm : 0;
+//         $total2W = ($billDetails && $billDetails->total2W) ? $billDetails->total2W : 0;
+//         $total3W = ($billDetails && $billDetails->total3W) ? $billDetails->total3W : 0;
+//         $total4W = ($billDetails && $billDetails->total4W) ? $billDetails->total4W : 0;
+//         $totalCW = ($billDetails && $billDetails->totalCW) ? $billDetails->totalCW : 0;
+//     }
 
-    $totalKmRate = $perKm * $totalKm; //$model->amountTotalKm;
-    $total2wRate = $per2w * $total2W;//$model->amount2Wheeler;
-    $total3wRate = $per3w * $total3W;//$model->amount3Wheeler;
-    $total4wRate = $per4w * $total4W;//$model->amount4Wheeler;
-    $totalCwRate = $perCw * $totalCW;//$model->amountCommmercial;
+//     $totalKmRate = $perKm * $totalKm; //$model->amountTotalKm;
+//     $total2wRate = $per2w * $total2W;//$model->amount2Wheeler;
+//     $total3wRate = $per3w * $total3W;//$model->amount3Wheeler;
+//     $total4wRate = $per4w * $total4W;//$model->amount4Wheeler;
+//     $totalCwRate = $perCw * $totalCW;//$model->amountCommmercial;
 
     
-    $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate;
+//     $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate;
 
-}
-else {
-    $companyBillingdetails = CompanyBillingDetails::find()->where(['companyId' => $model->companyId])->all();
+// }
+// else {
+//     $companyBillingdetails = CompanyBillingDetails::find()->where(['companyId' => $model->companyId])->all();
     
-    $totalEastKm = $totalEast2W = $totalEast3W = $totalEast4W = $totalEastCW = 0;
-    $totalKm = $total2W = $total3W = $total4W = $totalCW = 0;
+//     $totalEastKm = $totalEast2W = $totalEast3W = $totalEast4W = $totalEastCW = 0;
+//     $totalKm = $total2W = $total3W = $total4W = $totalCW = 0;
 
-    // Check whether billing for ALL states
-    if (empty($model->stateId))
-    {
-        foreach ($companyBillingdetails as $companyBillingdetail) {
-            // For east states
-            if ($companyBillingdetail->stateId == 10 || $companyBillingdetail->stateId == 11 || $companyBillingdetail->stateId == 18) {
-                $perEastKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
-                $perEast2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
-                $perEast3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
-                $perEast4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
-                $perEastCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
+//     // Check whether billing for ALL states
+//     if (empty($model->stateId))
+//     {
+//         foreach ($companyBillingdetails as $companyBillingdetail) {
+//             // For east states
+//             if ($companyBillingdetail->stateId == 10 || $companyBillingdetail->stateId == 11 || $companyBillingdetail->stateId == 18) {
+//                 $perEastKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
+//                 $perEast2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
+//                 $perEast3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
+//                 $perEast4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
+//                 $perEastCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
                 
-                $billingEast = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
-                $billDetailsEast = isset($billingEast->billDetails) ? json_decode($billingEast->billDetails) : '';
+//                 $billingEast = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
+//                 $billDetailsEast = isset($billingEast->billDetails) ? json_decode($billingEast->billDetails) : '';
                 
-                $totalEastKm += ($billDetailsEast->totalKm) ? $billDetailsEast->totalKm : 0;
-                $totalEast2W += ($billDetailsEast->total2W) ? $billDetailsEast->total2W : 0;
-                $totalEast3W += ($billDetailsEast->total3W) ? $billDetailsEast->total3W : 0;
-                $totalEast4W += ($billDetailsEast->total4W) ? $billDetailsEast->total4W : 0;
-                $totalEastCW += ($billDetailsEast->totalCW) ? $billDetailsEast->totalCW : 0;
-            }
-            else {
-                $perKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
-                $per2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
-                $per3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
-                $per4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
-                $perCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
+//                 $totalEastKm += ($billDetailsEast->totalKm) ? $billDetailsEast->totalKm : 0;
+//                 $totalEast2W += ($billDetailsEast->total2W) ? $billDetailsEast->total2W : 0;
+//                 $totalEast3W += ($billDetailsEast->total3W) ? $billDetailsEast->total3W : 0;
+//                 $totalEast4W += ($billDetailsEast->total4W) ? $billDetailsEast->total4W : 0;
+//                 $totalEastCW += ($billDetailsEast->totalCW) ? $billDetailsEast->totalCW : 0;
+//             }
+//             else {
+//                 $perKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
+//                 $per2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
+//                 $per3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
+//                 $per4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
+//                 $perCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
             
-                $billingOtherState = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
-                $billDetailsOtherStates = isset($billingOtherState->billDetails) ? json_decode($billingOtherState->billDetails) : '';
+//                 $billingOtherState = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
+//                 $billDetailsOtherStates = isset($billingOtherState->billDetails) ? json_decode($billingOtherState->billDetails) : '';
                 
-                $totalKm += ($billDetailsOtherStates->totalKm) ? $billDetailsOtherStates->totalKm : 0;
-                $total2W += ($billDetailsOtherStates->total2W) ? $billDetailsOtherStates->total2W : 0;
-                $total3W += ($billDetailsOtherStates->total3W) ? $billDetailsOtherStates->total3W : 0;
-                $total4W += ($billDetailsOtherStates->total4W) ? $billDetailsOtherStates->total4W : 0;
-                $totalCW += ($billDetailsOtherStates->totalCW) ? $billDetailsOtherStates->totalCW : 0;
-            }
+//                 $totalKm += ($billDetailsOtherStates->totalKm) ? $billDetailsOtherStates->totalKm : 0;
+//                 $total2W += ($billDetailsOtherStates->total2W) ? $billDetailsOtherStates->total2W : 0;
+//                 $total3W += ($billDetailsOtherStates->total3W) ? $billDetailsOtherStates->total3W : 0;
+//                 $total4W += ($billDetailsOtherStates->total4W) ? $billDetailsOtherStates->total4W : 0;
+//                 $totalCW += ($billDetailsOtherStates->totalCW) ? $billDetailsOtherStates->totalCW : 0;
+//             }
 
-            if($model->id == 8249){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 2;
-                $totalEastCW = 5;
+//             if($model->id == 8249){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 2;
+//                 $totalEastCW = 5;
 
-                $totalKm = 7810;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 251;
-                $totalCW = 93;
-            }elseif($model->id == 8599){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 3;
-                $totalEastCW = 3;
+//                 $totalKm = 7810;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 251;
+//                 $totalCW = 93;
+//             }elseif($model->id == 8599){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 3;
+//                 $totalEastCW = 3;
 
-                $totalKm = 5745;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 192;
-                $totalCW = 58;
-            }elseif($model->id == 8955){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 1;
-                $totalEastCW = 1;
+//                 $totalKm = 5745;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 192;
+//                 $totalCW = 58;
+//             }elseif($model->id == 8955){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 1;
+//                 $totalEastCW = 1;
 
-                $totalKm = 5810;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 166;
-                $totalCW = 53;
-            }elseif($model->id == 9305){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 39;
-                $totalEastCW = 8;
+//                 $totalKm = 5810;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 166;
+//                 $totalCW = 53;
+//             }elseif($model->id == 9305){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 39;
+//                 $totalEastCW = 8;
 
-                $totalKm = 6390;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 194;
-                $totalCW = 41;
+//                 $totalKm = 6390;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 194;
+//                 $totalCW = 41;
 
-                $perKm = 2.75;
-            }elseif($model->id == 9682){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 40;
-                $totalEastCW = 12;
+//                 $perKm = 2.75;
+//             }elseif($model->id == 9682){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 40;
+//                 $totalEastCW = 12;
 
-                $totalKm = 9399;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 230;
-                $totalCW = 64;
+//                 $totalKm = 9399;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 230;
+//                 $totalCW = 64;
 
-                $perKm = 2.75;
-            }elseif($model->id == 10068){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 18;
-                $totalEastCW = 2;
+//                 $perKm = 2.75;
+//             }elseif($model->id == 10068){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 18;
+//                 $totalEastCW = 2;
 
-                $totalKm = 6830;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 196;
-                $totalCW = 50;
+//                 $totalKm = 6830;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 196;
+//                 $totalCW = 50;
 
-                $perKm = 2.75;
-            }elseif($model->id == 10445){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 1;
-                $totalEastCW = 0;
+//                 $perKm = 2.75;
+//             }elseif($model->id == 10445){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 1;
+//                 $totalEastCW = 0;
 
-                $totalKm = 4644;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 144;
-                $totalCW = 23;
+//                 $totalKm = 4644;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 144;
+//                 $totalCW = 23;
 
-                $perKm = 2.75;
-            }
-            elseif($model->id == 10827){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 0;
-                $totalEastCW = 0;
+//                 $perKm = 2.75;
+//             }
+//             elseif($model->id == 10827){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 0;
+//                 $totalEastCW = 0;
 
-                $totalKm = 3096;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 179;
-                $totalCW = 36;
+//                 $totalKm = 3096;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 179;
+//                 $totalCW = 36;
 
-                $perKm = 2.75;
-            }
-            elseif($model->id == 11219){
-                $totalEastKm = 0;
-                $totalEast2W = 0;
-                $totalEast3W = 0;
-                $totalEast4W = 8;
-                $totalEastCW = 0;
+//                 $perKm = 2.75;
+//             }
+//             elseif($model->id == 11219){
+//                 $totalEastKm = 0;
+//                 $totalEast2W = 0;
+//                 $totalEast3W = 0;
+//                 $totalEast4W = 8;
+//                 $totalEastCW = 0;
     
-                $totalKm = 6096;
-                $total2W = 0;
-                $total3W = 0;
-                $total4W = 150;
-                $totalCW = 44;
+//                 $totalKm = 6096;
+//                 $total2W = 0;
+//                 $total3W = 0;
+//                 $total4W = 150;
+//                 $totalCW = 44;
     
-                $perKm = 2.75;
-            }
+//                 $perKm = 2.75;
+//             }
     
-            $totalEastKmRate = $totalEastKm * $perEastKm;
-            $totalEast2wRate = $totalEast2W * $perEast2w;
-            $totalEast3wRate = $totalEast3W * $perEast3w;
-            $totalEast4wRate = $totalEast4W * $perEast4w;
-            $totalEastCwRate = $totalEastCW * $perEastCw;
+//             $totalEastKmRate = $totalEastKm * $perEastKm;
+//             $totalEast2wRate = $totalEast2W * $perEast2w;
+//             $totalEast3wRate = $totalEast3W * $perEast3w;
+//             $totalEast4wRate = $totalEast4W * $perEast4w;
+//             $totalEastCwRate = $totalEastCW * $perEastCw;
     
-            $totalKmRate = $totalKm * $perKm;
-            $total2wRate = $total2W * $per2w;
-            $total3wRate = $total3W * $per3w;
-            $total4wRate = $total4W * $per4w;
-            $totalCwRate = $totalCW * $perCw;
+//             $totalKmRate = $totalKm * $perKm;
+//             $total2wRate = $total2W * $per2w;
+//             $total3wRate = $total3W * $per3w;
+//             $total4wRate = $total4W * $per4w;
+//             $totalCwRate = $totalCW * $perCw;
 
-            $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate + $totalEastKmRate + $totalEast2wRate + $totalEast3wRate + $totalEast4wRate + $totalEastCwRate;
-        }
-    }
-    else
-    {
-        $companyBillingdetail = CompanyBillingDetails::find()->where(['companyId' => $model->companyId, 'stateId' => $model->stateId])->one();
-        // For east states
-        if ($companyBillingdetail->stateId == 10 || $companyBillingdetail->stateId == 11 || $companyBillingdetail->stateId == 18) {
-            $perEastKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
-            $perEast2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
-            $perEast3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
-            $perEast4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
-            $perEastCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
+//             $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate + $totalEastKmRate + $totalEast2wRate + $totalEast3wRate + $totalEast4wRate + $totalEastCwRate;
+//         }
+//     }
+//     else
+//     {
+//         $companyBillingdetail = CompanyBillingDetails::find()->where(['companyId' => $model->companyId, 'stateId' => $model->stateId])->one();
+//         // For east states
+//         if ($companyBillingdetail->stateId == 10 || $companyBillingdetail->stateId == 11 || $companyBillingdetail->stateId == 18) {
+//             $perEastKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
+//             $perEast2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
+//             $perEast3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
+//             $perEast4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
+//             $perEastCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
             
-            $billingEast = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
-            $billDetailsEast = isset($billingEast->billDetails) ? json_decode($billingEast->billDetails) : '';
+//             $billingEast = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
+//             $billDetailsEast = isset($billingEast->billDetails) ? json_decode($billingEast->billDetails) : '';
             
-            $totalEastKm += ($billDetailsEast->totalKm) ? $billDetailsEast->totalKm : 0;
-            $totalEast2W += ($billDetailsEast->total2W) ? $billDetailsEast->total2W : 0;
-            $totalEast3W += ($billDetailsEast->total3W) ? $billDetailsEast->total3W : 0;
-            $totalEast4W += ($billDetailsEast->total4W) ? $billDetailsEast->total4W : 0;
-            $totalEastCW += ($billDetailsEast->totalCW) ? $billDetailsEast->totalCW : 0;
-        }
-        else {
-            $perKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
-            $per2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
-            $per3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
-            $per4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
-            $perCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
+//             $totalEastKm += ($billDetailsEast->totalKm) ? $billDetailsEast->totalKm : 0;
+//             $totalEast2W += ($billDetailsEast->total2W) ? $billDetailsEast->total2W : 0;
+//             $totalEast3W += ($billDetailsEast->total3W) ? $billDetailsEast->total3W : 0;
+//             $totalEast4W += ($billDetailsEast->total4W) ? $billDetailsEast->total4W : 0;
+//             $totalEastCW += ($billDetailsEast->totalCW) ? $billDetailsEast->totalCW : 0;
+//         }
+//         else {
+//             $perKm = (isset($companyBillingdetail->rateConveyance)) ? $companyBillingdetail->rateConveyance : 0;
+//             $per2w = (isset($companyBillingdetail->rate2Wheeler)) ? $companyBillingdetail->rate2Wheeler : 0;
+//             $per3w = (isset($companyBillingdetail->rate3Wheeler)) ? $companyBillingdetail->rate3Wheeler : 0;
+//             $per4w = (isset($companyBillingdetail->rate4Wheeler)) ? $companyBillingdetail->rate4Wheeler : 0;
+//             $perCw = (isset($companyBillingdetail->rateCommercial)) ? $companyBillingdetail->rateCommercial : 0;
         
-            $billingOtherState = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
-            $billDetailsOtherStates = isset($billingOtherState->billDetails) ? json_decode($billingOtherState->billDetails) : '';
+//             $billingOtherState = AxionPreinspectionBilling::find()->where(['companyId' => $companyBillingdetail->companyId, 'stateId'=> $companyBillingdetail->stateId, 'orderNo' => $model->orderNo])->one();
+//             $billDetailsOtherStates = isset($billingOtherState->billDetails) ? json_decode($billingOtherState->billDetails) : '';
             
-            $totalKm += ($billDetailsOtherStates->totalKm) ? $billDetailsOtherStates->totalKm : 0;
-            $total2W += ($billDetailsOtherStates->total2W) ? $billDetailsOtherStates->total2W : 0;
-            $total3W += ($billDetailsOtherStates->total3W) ? $billDetailsOtherStates->total3W : 0;
-            $total4W += ($billDetailsOtherStates->total4W) ? $billDetailsOtherStates->total4W : 0;
-            $totalCW += ($billDetailsOtherStates->totalCW) ? $billDetailsOtherStates->totalCW : 0;
-        }
+//             $totalKm += ($billDetailsOtherStates->totalKm) ? $billDetailsOtherStates->totalKm : 0;
+//             $total2W += ($billDetailsOtherStates->total2W) ? $billDetailsOtherStates->total2W : 0;
+//             $total3W += ($billDetailsOtherStates->total3W) ? $billDetailsOtherStates->total3W : 0;
+//             $total4W += ($billDetailsOtherStates->total4W) ? $billDetailsOtherStates->total4W : 0;
+//             $totalCW += ($billDetailsOtherStates->totalCW) ? $billDetailsOtherStates->totalCW : 0;
+//         }
 
-        if($model->id == 8249){
-            $totalEastKm = 0;
-            $totalEast2W = 0;
-            $totalEast3W = 0;
-            $totalEast4W = 2;
-            $totalEastCW = 5;
+//         if($model->id == 8249){
+//             $totalEastKm = 0;
+//             $totalEast2W = 0;
+//             $totalEast3W = 0;
+//             $totalEast4W = 2;
+//             $totalEastCW = 5;
 
-            $totalKm = 7810;
-            $total2W = 0;
-            $total3W = 0;
-            $total4W = 251;
-            $totalCW = 93;
-        }elseif($model->id == 8599){
-            $totalEastKm = 0;
-            $totalEast2W = 0;
-            $totalEast3W = 0;
-            $totalEast4W = 3;
-            $totalEastCW = 3;
+//             $totalKm = 7810;
+//             $total2W = 0;
+//             $total3W = 0;
+//             $total4W = 251;
+//             $totalCW = 93;
+//         }elseif($model->id == 8599){
+//             $totalEastKm = 0;
+//             $totalEast2W = 0;
+//             $totalEast3W = 0;
+//             $totalEast4W = 3;
+//             $totalEastCW = 3;
 
-            $totalKm = 5745;
-            $total2W = 0;
-            $total3W = 0;
-            $total4W = 192;
-            $totalCW = 58;
-        }elseif($model->id == 10068){
-            $totalEastKm = 0;
-            $totalEast2W = 0;
-            $totalEast3W = 0;
-            $totalEast4W = 18;
-            $totalEastCW = 2;
+//             $totalKm = 5745;
+//             $total2W = 0;
+//             $total3W = 0;
+//             $total4W = 192;
+//             $totalCW = 58;
+//         }elseif($model->id == 10068){
+//             $totalEastKm = 0;
+//             $totalEast2W = 0;
+//             $totalEast3W = 0;
+//             $totalEast4W = 18;
+//             $totalEastCW = 2;
 
-            $totalKm = 6830;
-            $total2W = 0;
-            $total3W = 0;
-            $total4W = 196;
-            $totalCW = 50;
+//             $totalKm = 6830;
+//             $total2W = 0;
+//             $total3W = 0;
+//             $total4W = 196;
+//             $totalCW = 50;
 
-            $perKm = 2.75;
-        }
+//             $perKm = 2.75;
+//         }
 
-        $totalEastKmRate = $totalEastKm * $perEastKm;
-        $totalEast2wRate = $totalEast2W * $perEast2w;
-        $totalEast3wRate = $totalEast3W * $perEast3w;
-        $totalEast4wRate = $totalEast4W * $perEast4w;
-        $totalEastCwRate = $totalEastCW * $perEastCw;
+//         $totalEastKmRate = $totalEastKm * $perEastKm;
+//         $totalEast2wRate = $totalEast2W * $perEast2w;
+//         $totalEast3wRate = $totalEast3W * $perEast3w;
+//         $totalEast4wRate = $totalEast4W * $perEast4w;
+//         $totalEastCwRate = $totalEastCW * $perEastCw;
 
-        $totalKmRate = $totalKm * $perKm;
-        $total2wRate = $total2W * $per2w;
-        $total3wRate = $total3W * $per3w;
-        $total4wRate = $total4W * $per4w;
-        $totalCwRate = $totalCW * $perCw;
+//         $totalKmRate = $totalKm * $perKm;
+//         $total2wRate = $total2W * $per2w;
+//         $total3wRate = $total3W * $per3w;
+//         $total4wRate = $total4W * $per4w;
+//         $totalCwRate = $totalCW * $perCw;
 
-        // $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate;
-        $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate + $totalEastKmRate + $totalEast2wRate + $totalEast3wRate + $totalEast4wRate + $totalEastCwRate;
-    }
+//         // $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate;
+//         $totalBillAmount = $totalKmRate + $total2wRate + $total3wRate + $total4wRate + $totalCwRate + $totalEastKmRate + $totalEast2wRate + $totalEast3wRate + $totalEast4wRate + $totalEastCwRate;
+//     }
     
 
-    $totalKm += $totalEastKm;
-    if($model->id == 8249){
-        $totalKmRate = $totalKmRate;
-    }elseif($model->id == 8599){
-        $totalKmRate = $totalKmRate;
-    }elseif($model->id == 9305){
-        $totalKmRate = $totalKmRate;
-    }elseif($model->id == 9682){
-        $totalKmRate = $totalKmRate;
-    }elseif($model->id == 10068){ // elseif($model->id == 10068){
-        $totalKmRate = $totalKmRate;
-    }elseif($model->id == 10445){
-        $totalKmRate = $totalKmRate;
-    }elseif($model->id == 11219){
-        $totalKmRate = $totalKmRate;
-    }
-    else{
-        $totalKmRate = $model->amountTotalKm;
-    }
-}
+//     $totalKm += $totalEastKm;
+//     if($model->id == 8249){
+//         $totalKmRate = $totalKmRate;
+//     }elseif($model->id == 8599){
+//         $totalKmRate = $totalKmRate;
+//     }elseif($model->id == 9305){
+//         $totalKmRate = $totalKmRate;
+//     }elseif($model->id == 9682){
+//         $totalKmRate = $totalKmRate;
+//     }elseif($model->id == 10068){ // elseif($model->id == 10068){
+//         $totalKmRate = $totalKmRate;
+//     }elseif($model->id == 10445){
+//         $totalKmRate = $totalKmRate;
+//     }elseif($model->id == 11219){
+//         $totalKmRate = $totalKmRate;
+//     }
+//     else{
+//         $totalKmRate = $model->amountTotalKm;
+//     }
+// }
 
 $totalGst = $model->totalGst;
 $overallAmount = $model->totalAmount;
@@ -371,13 +371,13 @@ $roundAmt = round($model->totalAmount);
 
 $id = ($model->id < 10) ? '0'.$model->id : $model->id;
 $logo = Yii::$app->request->baseUrl.'/images/logo.jpeg';
-if($model->companyId == 5){
-    $month_end = strtotime('last day of this month', strtotime($model->billPeriodFrom));    
-    $date = date('d-M-Y', $month_end);
-}else{
-    $month_start = strtotime('first day of next month', strtotime($model->billPeriodFrom));    
-    $date = date('d-M-Y', $month_start);
-}
+// if($model->companyId == 5){
+//     $month_end = strtotime('last day of this month', strtotime($model->billPeriodFrom));    
+//     $date = date('d-M-Y', $month_end);
+// }else{
+//     $month_start = strtotime('first day of next month', strtotime($model->billPeriodFrom));    
+//     $date = date('d-M-Y', $month_start);
+// }
 $fromDate = date("M Y",strtotime($model->billPeriodFrom));
 ?>
 
