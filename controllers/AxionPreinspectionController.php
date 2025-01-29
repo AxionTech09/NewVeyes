@@ -193,63 +193,7 @@ class AxionPreinspectionController extends Controller
                         $this->log($preinspect_model->contactPersonMobileNo, json_encode($hismodel->getErrors()));
                     }
 
-                    if($preinspect_model->insurerName == 9 || $preinspect_model->insurerName == "IFFCO TOKIO GENERAL INSURANCE CO. LTD.") {
-                        /*if($oldUserId){
-                            $report = "Reassignment of Agency";
-                        }else{
-                            $report = "Inspection Agency Assigned";
-                        }*/
-                        $status =$preinspect_model->status;
-                        $report='';
-                        if($status == 101)
-                        {
-                            $report = 'Report Recommended';
-                        }
-                        else if($status == 102)
-                        {
-                            $report = 'Report Not Recommended';
-                        }
-                        else if($status == 104)
-                        {
-                            $report = 'Report Referred To Underwriter';
-                        }
-                        
-                        if($report){
-                            //$url = "http://125.22.81.132/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
-                            $url = "https://sampark.itgi.co.in/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
-                            date_default_timezone_set('Asia/Kolkata');
-                            $inspectionDatetime = date("m/d/Y h:i:s");
-                            $specialChar = ['&', '"', '<', '>']; 
-		                    $specialCharEntity = ['&amp;', '&quot;', '&lt;', '&gt;']; 
-		                    $preinspect_model->remarks = str_ireplace($specialChar, $specialCharEntity, $preinspect_model->remarks);
-
-                            $str = '<?xml version="1.0" encoding="UTF-8"?>
-                            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cus="http://siebel.com/CustomUI">
-                            <soapenv:Header/>
-                            <soapenv:Body>
-                            <cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                            <!--Optional:-->
-                            <cus:LatitudeLongitude></cus:LatitudeLongitude>
-                            <cus:PreInspectionNumber>'.$preinspect_model->contactPersonMobileNo.'</cus:PreInspectionNumber>
-                            <cus:RecommendationResponse>'.$report.'</cus:RecommendationResponse>
-                            <cus:InspectionLocation>'.$preinspect_model->surveyLocation.'</cus:InspectionLocation>
-                            <cus:PreInspectionIntegrationId>2</cus:PreInspectionIntegrationId>
-                            <!--Optional:-->
-                            <cus:Remarks>'.$preinspect_model->remarks.'</cus:Remarks>
-                            <!--Optional:-->
-                            <cus:ChassisNumber>'.$preinspect_model->chassisNo.'</cus:ChassisNumber>
-                            <!--Optional:-->
-                            <cus:EngineNumber>'.$preinspect_model->engineNo.'</cus:EngineNumber>
-                            <!--Optional:-->
-                            <cus:InspectionDateTime>'.$inspectionDatetime.'</cus:InspectionDateTime>
-                            </cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                            </soapenv:Body>
-                            </soapenv:Envelope>';
-                            $actionUrl = 'document/http://siebel.com/CustomUI:ITGIMotorPreInspectionAgencyRecommendationResponse';
-                            $resp = $this->curlRequest($url,$actionUrl,$str);
-                            $this->log($preinspect_model->contactPersonMobileNo,$resp,$str);
-                        }
-                    }
+                    
                 }
                 else {
                     return json_encode($preinspect_model->getErrors());exit;
@@ -296,21 +240,21 @@ class AxionPreinspectionController extends Controller
                 $mobileno = $premodel->callerMobileNo;
                 $message = 'STATUS- '.$premodel->registrationNo.'/'.$premodel->referenceNo.' CANCELLED REASON:('.$cancelledReason.') '.$additionalSmsMessage.' By Axion Team';
 
-                if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                {
-                    $message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Cancelled. Reason:  '.$cancelledReason .' By Axion';
+                // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                // {
+                //     $message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Cancelled. Reason:  '.$cancelledReason .' By Axion';
                     
-                    //sending sms to agent
-                    $smsStatus = $this->sendSms($mobileno, $message);
+                //     //sending sms to agent
+                //     $smsStatus = $this->sendSms($mobileno, $message);
 
-                    //sending sms to customer
-                    $smsStatus = $this->sendSms(@$model->insuredMobile, $message);
-                }
-                else
-                {
-                    //sending sms to agent
-                    $smsStatus = $this->sendSms($mobileno, $message);
-                }
+                //     //sending sms to customer
+                //     $smsStatus = $this->sendSms(@$model->insuredMobile, $message);
+                // }
+                // else
+                // {
+                // }
+                //sending sms to agent
+                $smsStatus = $this->sendSms($mobileno, $message);
                 
 
                 if($premodel->callerDetails != '')
@@ -333,13 +277,13 @@ class AxionPreinspectionController extends Controller
                         ->setSubject($emailSubject);
                         $smailer->send();
 
-                        if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                        {
-                            $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
-                            ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
-                            ->setSubject($emailSubject);
-                            $smailer->send();
-                        }
+                        // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                        // {
+                        //     $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
+                        //     ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
+                        //     ->setSubject($emailSubject);
+                        //     $smailer->send();
+                        // }
                     }
                 }
                 
@@ -1249,171 +1193,171 @@ class AxionPreinspectionController extends Controller
         $currentDateTime = date('Y-m-d H:i:s');
 
         $apiData = [];
-        if ($premodel->insurerName == 10 || $premodel->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-        {
-            $postData = Yii::$app->request->post();
+        // if ($premodel->insurerName == 10 || $premodel->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+        // {
+        //     $postData = Yii::$app->request->post();
 
-            if ($postData['AxionPreinspection']['chassisNo']) // $premodel->chassisNo != 
-            {
-                $apiData['chassis_number'] = $postData['AxionPreinspection']['chassisNo'];
-            }
-            if ($postData['AxionPreinspection']['engineNo']) // $premodel->engineNo != 
-            {
-                $apiData['engine_number'] = $postData['AxionPreinspection']['engineNo'];
-            }
-            if ($postData['AxionPreinspection']['registrationNo']) // $premodel->registrationNo != 
-            {
-                $apiData['registration_number'] = $postData['AxionPreinspection']['registrationNo'];
-            }
-            //if ($premodel->status != $postData['AxionPreinspection']['status'])
-            //{
-                $reportLink = '';
-                switch($postData['AxionPreinspection']['status'])
-                {
-                    case 0:
-                        $rsStatus = 'Case Created';
-                        break;
+        //     if ($postData['AxionPreinspection']['chassisNo']) // $premodel->chassisNo != 
+        //     {
+        //         $apiData['chassis_number'] = $postData['AxionPreinspection']['chassisNo'];
+        //     }
+        //     if ($postData['AxionPreinspection']['engineNo']) // $premodel->engineNo != 
+        //     {
+        //         $apiData['engine_number'] = $postData['AxionPreinspection']['engineNo'];
+        //     }
+        //     if ($postData['AxionPreinspection']['registrationNo']) // $premodel->registrationNo != 
+        //     {
+        //         $apiData['registration_number'] = $postData['AxionPreinspection']['registrationNo'];
+        //     }
+        //     //if ($premodel->status != $postData['AxionPreinspection']['status'])
+        //     //{
+        //         $reportLink = '';
+        //         switch($postData['AxionPreinspection']['status'])
+        //         {
+        //             case 0:
+        //                 $rsStatus = 'Case Created';
+        //                 break;
 
-                    case 1:
-                        $rsStatus = 'Reassigned';
-                        break;
+        //             case 1:
+        //                 $rsStatus = 'Reassigned';
+        //                 break;
 
-                    case 9:
-                        $rsStatus = 'Rejected';
-                        break;
+        //             case 9:
+        //                 $rsStatus = 'Rejected';
+        //                 break;
 
-                    case 8:
-                        $rsStatus = 'QC Pending';
-                        break;
+        //             case 8:
+        //                 $rsStatus = 'QC Pending';
+        //                 break;
 
-                    case 12:
-                        $rsStatus = 'Assigned';
-                        break;
+        //             case 12:
+        //                 $rsStatus = 'Assigned';
+        //                 break;
 
-                    case 101:
-                        $rsStatus = 'Recommended';
-                        $reportLink = Yii::$app->urlManager->createAbsoluteUrl('axion-preinspection/vehicleqcpdf?id='.$id);                            
-                        break;
+        //             case 101:
+        //                 $rsStatus = 'Recommended';
+        //                 $reportLink = Yii::$app->urlManager->createAbsoluteUrl('axion-preinspection/vehicleqcpdf?id='.$id);                            
+        //                 break;
 
-                    case 102:
-                        $rsStatus = 'Not Recommended';
-                        $reportLink = Yii::$app->urlManager->createAbsoluteUrl('axion-preinspection/vehicleqcpdf?id='.$id);  
-                        break;
+        //             case 102:
+        //                 $rsStatus = 'Not Recommended';
+        //                 $reportLink = Yii::$app->urlManager->createAbsoluteUrl('axion-preinspection/vehicleqcpdf?id='.$id);  
+        //                 break;
 
-                    case 104:
-                        $rsStatus = 'Refer to Under Writer';
-                        $reportLink = Yii::$app->urlManager->createAbsoluteUrl('axion-preinspection/vehicleqcpdf?id='.$id);  
-                        break;
+        //             case 104:
+        //                 $rsStatus = 'Refer to Under Writer';
+        //                 $reportLink = Yii::$app->urlManager->createAbsoluteUrl('axion-preinspection/vehicleqcpdf?id='.$id);  
+        //                 break;
 
-                    default:
-                        $rsStatus = 'Case Created';
-                }
+        //             default:
+        //                 $rsStatus = 'Case Created';
+        //         }
 
-                $apiData['status'] = $rsStatus;
-                $apiData["vir_link"] = $reportLink;
-            //}
-            if (!empty($apiData['status']) && $apiData['status'] == 'Reassigned')
-            {
-                if (!empty($postData['AxionPreinspection']['rescheduleDateTime']))
-                {
-                    $rescheduleDateTimeData = ($postData['AxionPreinspection']['rescheduleDateTime1']) ? $postData['AxionPreinspection']['rescheduleDateTime1']: $postData['AxionPreinspection']['rescheduleDateTime'];                    
-                    $postData['AxionPreinspection']['rescheduleDateTime'] = $rescheduleDateTimeData;
+        //         $apiData['status'] = $rsStatus;
+        //         $apiData["vir_link"] = $reportLink;
+        //     //}
+        //     if (!empty($apiData['status']) && $apiData['status'] == 'Reassigned')
+        //     {
+        //         if (!empty($postData['AxionPreinspection']['rescheduleDateTime']))
+        //         {
+        //             $rescheduleDateTimeData = ($postData['AxionPreinspection']['rescheduleDateTime1']) ? $postData['AxionPreinspection']['rescheduleDateTime1']: $postData['AxionPreinspection']['rescheduleDateTime'];                    
+        //             $postData['AxionPreinspection']['rescheduleDateTime'] = $rescheduleDateTimeData;
                     
-                    $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['rescheduleDateTime']));
-                    //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
-                }
-                else if (!empty($postData['AxionPreinspection']['customerAppointDateTime']))
-                {
-                    $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['customerAppointDateTime']));
-                    //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
-                }
-            }
-            if ($premodel->manufacturer != $postData['AxionPreinspection']['manufacturer'])
-            {
-                $apiData['vehicle_make'] = $postData['AxionPreinspection']['manufacturer'];
-            }
-            if ($premodel->model != $postData['AxionPreinspection']['model'])
-            {
-                $apiData['vehicle_model'] = $postData['AxionPreinspection']['model'];
-            }
-            if ($premodel->manufacturingYear != $postData['AxionPreinspection']['manufacturingYear'])
-            {
-                $apiData['year_of_manufacture'] = $postData['AxionPreinspection']['manufacturingYear'];
-            }
-            //if ($premodel->remarks != $postData['AxionPreinspection']['remarks'])
-            //{
-                $apiData['remarks'] = $postData['AxionPreinspection']['remarks'];
-            //}
-            //if (($premodel->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $premodel->status == 101)
-            //{
-                if ($postData['AxionPreinspection']['status'] == 101 && !empty($postData['AxionPreinspection']['completedSurveyDateTime'])) {
-                    $apiData['approvedDate'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['completedSurveyDateTime']));
-                    // $apiData['approvedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
-                    //$apiData['approvedDate'] = str_replace('+00:00', '.00', $apiData['approvedDate']);
-                }
-            //}
-            //if (($premodel->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $premodel->status == 102)
-            //{
-                if (($postData['AxionPreinspection']['status'] == 102 || $postData['AxionPreinspection']['status'] == 9)) {
-                    $apiData['rejectedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
-                    //$apiData['rejectedDate'] = str_replace('+00:00', '.00', $apiData['rejectedDate']);
-                }
-            //} 
+        //             $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['rescheduleDateTime']));
+        //             //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
+        //         }
+        //         else if (!empty($postData['AxionPreinspection']['customerAppointDateTime']))
+        //         {
+        //             $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['customerAppointDateTime']));
+        //             //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
+        //         }
+        //     }
+        //     if ($premodel->manufacturer != $postData['AxionPreinspection']['manufacturer'])
+        //     {
+        //         $apiData['vehicle_make'] = $postData['AxionPreinspection']['manufacturer'];
+        //     }
+        //     if ($premodel->model != $postData['AxionPreinspection']['model'])
+        //     {
+        //         $apiData['vehicle_model'] = $postData['AxionPreinspection']['model'];
+        //     }
+        //     if ($premodel->manufacturingYear != $postData['AxionPreinspection']['manufacturingYear'])
+        //     {
+        //         $apiData['year_of_manufacture'] = $postData['AxionPreinspection']['manufacturingYear'];
+        //     }
+        //     //if ($premodel->remarks != $postData['AxionPreinspection']['remarks'])
+        //     //{
+        //         $apiData['remarks'] = $postData['AxionPreinspection']['remarks'];
+        //     //}
+        //     //if (($premodel->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $premodel->status == 101)
+        //     //{
+        //         if ($postData['AxionPreinspection']['status'] == 101 && !empty($postData['AxionPreinspection']['completedSurveyDateTime'])) {
+        //             $apiData['approvedDate'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['completedSurveyDateTime']));
+        //             // $apiData['approvedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
+        //             //$apiData['approvedDate'] = str_replace('+00:00', '.00', $apiData['approvedDate']);
+        //         }
+        //     //}
+        //     //if (($premodel->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $premodel->status == 102)
+        //     //{
+        //         if (($postData['AxionPreinspection']['status'] == 102 || $postData['AxionPreinspection']['status'] == 9)) {
+        //             $apiData['rejectedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
+        //             //$apiData['rejectedDate'] = str_replace('+00:00', '.00', $apiData['rejectedDate']);
+        //         }
+        //     //} 
 
-            //if ($model->vType != $postData['AxionPreinspectionVehicle']['vType'])
-            //{
-                switch($postData['AxionPreinspectionVehicle']['vType'])
-                {
-                    case '4-WHEELER':
-                        $rsVehicleType = 'Private Car';
-                        break;
+        //     //if ($model->vType != $postData['AxionPreinspectionVehicle']['vType'])
+        //     //{
+        //         switch($postData['AxionPreinspectionVehicle']['vType'])
+        //         {
+        //             case '4-WHEELER':
+        //                 $rsVehicleType = 'Private Car';
+        //                 break;
 
-                    case '2-WHEELER':
-                        $rsVehicleType = 'Two-wheeler';
-                        break;
+        //             case '2-WHEELER':
+        //                 $rsVehicleType = 'Two-wheeler';
+        //                 break;
 
-                    case 'COMMERCIAL':
-                        switch($postData['AxionPreinspectionVehicle']['vCategory'])
-                        {
-                            case 'Passenger Carrying Vehicle':
-                                $rsVehicleType = 'Passenger Carrying Vehicle';
-                                break;
+        //             case 'COMMERCIAL':
+        //                 switch($postData['AxionPreinspectionVehicle']['vCategory'])
+        //                 {
+        //                     case 'Passenger Carrying Vehicle':
+        //                         $rsVehicleType = 'Passenger Carrying Vehicle';
+        //                         break;
 
-                            case 'Goods Carrying Vehicle':
-                                $rsVehicleType = 'Goods Carrying Vehicle';
-                                break;
+        //                     case 'Goods Carrying Vehicle':
+        //                         $rsVehicleType = 'Goods Carrying Vehicle';
+        //                         break;
 
-                            case 'Miscellaneous Vehicle':
-                                $rsVehicleType = 'Miscellaneous Vehicle';
-                                break;
-                            default:
-                                $rsVehicleType = 'Private Car';
-                        }
-                        break;
+        //                     case 'Miscellaneous Vehicle':
+        //                         $rsVehicleType = 'Miscellaneous Vehicle';
+        //                         break;
+        //                     default:
+        //                         $rsVehicleType = 'Private Car';
+        //                 }
+        //                 break;
                         
-                    default:
-                        $rsVehicleType = 'Private Car';
-                }
+        //             default:
+        //                 $rsVehicleType = 'Private Car';
+        //         }
 
-                $apiData['vehicle_type'] = $rsVehicleType;
+        //         $apiData['vehicle_type'] = $rsVehicleType;
 
-            //} 
-            if ($model->fuelType != $postData['AxionPreinspectionVehicle']['fuelType'])
-            {
-                $apiData['fuel_type'] = $postData['AxionPreinspectionVehicle']['fuelType'];
-            } 
-            if ($model->odometerReading != $postData['AxionPreinspectionVehicle']['odometerReading'])
-            {
-                $apiData['odometer_reading'] = $postData['AxionPreinspectionVehicle']['odometerReading'];
-            } 
+        //     //} 
+        //     if ($model->fuelType != $postData['AxionPreinspectionVehicle']['fuelType'])
+        //     {
+        //         $apiData['fuel_type'] = $postData['AxionPreinspectionVehicle']['fuelType'];
+        //     } 
+        //     if ($model->odometerReading != $postData['AxionPreinspectionVehicle']['odometerReading'])
+        //     {
+        //         $apiData['odometer_reading'] = $postData['AxionPreinspectionVehicle']['odometerReading'];
+        //     } 
             
-            $apiData['inspected_Start_location'] = $premodel->surveyLocation;
-            $apiData['inspected_Location'] = $premodel->surveyLocation2;
-            $apiData['no_of_Kilometers'] = $premodel->extraKM;
+        //     $apiData['inspected_Start_location'] = $premodel->surveyLocation;
+        //     $apiData['inspected_Location'] = $premodel->surveyLocation2;
+        //     $apiData['no_of_Kilometers'] = $premodel->extraKM;
 
-            $apiData['vir_case_number'] = $premodel->contactPersonMobileNo;
-            $apiData['reference_no'] = $premodel->referenceNo;
-        }
+        //     $apiData['vir_case_number'] = $premodel->contactPersonMobileNo;
+        //     $apiData['reference_no'] = $premodel->referenceNo;
+        // }
 
         if (Yii::$app->request->post('create_session')==='create_session') {
             $this->createCustomerSession($premodel->id);
@@ -1424,7 +1368,8 @@ class AxionPreinspectionController extends Controller
             //$premodel->completedSurveyDateTime = $completedSurveyDateTime;
             $premodel->customerAppointDateTime = $customerAppointDateTime;
 
-            if ( ($role != 'Admin' && $role != 'Superadmin') || $premodel->insurerName == 9)
+            // if ( ($role != 'Admin' && $role != 'Superadmin') || $premodel->insurerName == 9)
+            if ($role != 'Admin' && $role != 'Superadmin')
                 $premodel->updatedBy = Yii::$app->user->identity->id;
 
             if ($conveyanceApprovalImg) {
@@ -1543,207 +1488,90 @@ class AxionPreinspectionController extends Controller
 
             // $attachment = array("chassisThumb"=>"chp.jpg","rcCopy"=>"rcb1.jpg","preInsuranceCopy"=>"rcb2.jpg","cngLpgKit"=>"cng.jpg","rightSideFullView"=>"rs.jpg","rearViewImage"=>"bs.jpg","enginePhoto"=>"ecr.jpg","dashBoardPhoto"=>"dbd.jpg","frontLeftCorner45"=>"flc.jpg","leftSideFullView"=>"ls.jpg","leftQtrPanel"=>"blc.jpg","rightQtrPanel"=>"brc.jpg","frontRightCorner45"=>"frc.jpg","frontViewNumberPlate"=>"ws.jpg","frontViewNumberPlate"=>"fs.jpg", "Others-1"=>"Others-1.jpg", "Others-2"=>"Others-2.jpg", "Others-3"=>"Others-3.jpg", "Others-4"=>"Others-4.jpg", "Others-5"=>"Others-5.jpg", "Others-6"=>"Others-6.jpg", "Others-7"=>"Others-7.jpg", "Others-8"=>"Others-8.jpg", "Others-9"=>"Others-9.jpg", "Others-10"=>"Others-10.jpg", "Others-11"=>"Others-11.jpg", "Others-12"=>"Others-12.jpg", "Others-13"=>"Others-13.jpg", "Others-14"=>"Others-14.jpg", "Others-15"=>"Others-15.jpg", "Others-16"=>"Others-16.jpg", "Others-17"=>"Others-17.jpg", "Others-18"=>"Others-18.jpg", "Others-19"=>"Others-19.jpg", "Others-20"=>"Others-20.jpg", "Others-21"=>"Others-21.jpg", "Others-22"=>"Others-22.jpg", "Others-23"=>"Others-23.jpg", "Others-24"=>"Others-24.jpg", "Others-25"=>"Others-25.jpg", "Others-26"=>"Others-26.jpg", "Others-27"=>"Others-27.jpg", "Others-28"=>"Others-28.jpg", "Others-29"=>"Others-29.jpg", "Others-30"=>"Others-30.jpg", "Others-31"=>"Others-31.jpg", "Others-32"=>"Others-32.jpg", "Others-33"=>"Others-33.jpg", "Others-34"=>"Others-34.jpg", "Others-35"=>"Others-35.jpg", "Others-36"=>"Others-36.jpg", "Others-37"=>"Others-37.jpg", "Others-38"=>"Others-38.jpg", "Others-39"=>"Others-39.jpg", "Others-40"=>"Others-40.jpg", "Others-41"=>"Others-41.jpg", "Others-42"=>"Others-42.jpg", "Others-43"=>"Others-43.jpg", "Others-44"=>"Others-44.jpg", "Others-45"=>"Others-45.jpg", "Others-46"=>"Others-46.jpg", "Others-47"=>"Others-47.jpg", "Others-48"=>"Others-48.jpg", "Others-49"=>"Others-49.jpg", "Others-50"=>"Others-50.jpg","vehicleVideo"=>"video.mp4");
 
-            if ($premodel->insurerName == 9 || $premodel->insurerName == "IFFCO TOKIO GENERAL INSURANCE CO. LTD.") {
 
-                $status =$premodel->status;
-                $report='';
+            // else if ($premodel->insurerName == 10 || $premodel->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+            // {
+            //     // $url = "https://www.royalsundaram.net/iLoungeServices/virintegration/updateVirCaseStatus";  // Test  
+            //     $url = "https://www.royalsundaram.in/iLoungeServices/virintegration/updateVirCaseStatus";    // Production 
+            //     // $resp = $this->rsCurlRequest($url, json_encode($apiData));
+            //     $resp = $this->rsCurlRequest($url, json_encode($apiData));
 
-                if($status == 101)
-                {
-                    $report = 'Report Recommended';
-                }
-                else if($status == 102)
-                {
-                    $report = 'Report Not Recommended';
-                }
-                else if($status == 104)
-                {
-                    $report = 'Report Referred To Underwriter';
-                }
-
-                if($report){
-                    $url = "https://sampark.itgi.co.in/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
-                    date_default_timezone_set('Asia/Kolkata');
-                    $inspectionDatetime = date("m/d/Y h:i:s");
-                    $specialChar = ['&', '"', '<', '>']; 
-		            $specialCharEntity = ['&amp;', '&quot;', '&lt;', '&gt;']; 
-		            $premodel->remarks = str_ireplace($specialChar, $specialCharEntity, $premodel->remarks);
-
-                    $str = '<?xml version="1.0" encoding="UTF-8"?>
-                    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cus="http://siebel.com/CustomUI">
-                    <soapenv:Header/>
-                    <soapenv:Body>
-                    <cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                    <!--Optional:-->
-                    <cus:LatitudeLongitude></cus:LatitudeLongitude>
-                    <cus:PreInspectionNumber>'.$premodel->contactPersonMobileNo.'</cus:PreInspectionNumber>
-                    <cus:RecommendationResponse>'.$report.'</cus:RecommendationResponse>
-                    <cus:InspectionLocation>'.$premodel->surveyLocation.'</cus:InspectionLocation>
-                    <cus:PreInspectionIntegrationId>2</cus:PreInspectionIntegrationId>
-                    <!--Optional:-->
-                    <cus:Remarks>'.$premodel->remarks.'</cus:Remarks>
-                    <!--Optional:-->
-                    <cus:ChassisNumber>'.$premodel->chassisNo.'</cus:ChassisNumber>
-                    <!--Optional:-->
-                    <cus:EngineNumber>'.$premodel->engineNo.'</cus:EngineNumber>
-                    <!--Optional:-->
-                    <cus:InspectionDateTime>'.$inspectionDatetime.'</cus:InspectionDateTime>
-                    </cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                    </soapenv:Body>
-                    </soapenv:Envelope>';
-                    $actionUrl = 'document/http://siebel.com/CustomUI:ITGIMotorPreInspectionAgencyRecommendationResponse';
-                    $resp = $this->curlRequest($url,$actionUrl,$str);
-                    $this->log($premodel->contactPersonMobileNo,$resp,$str);
-                }
-
-                //$pdfFile = getcwd().'/api-uploads/pdf/'.$id.'.pdf';
-                $pdfFile = \Yii::$app->params['s3Bucket'].'.s3.'.\Yii::$app->params['s3Region'].'.amazonaws.com/'.'/api-uploads/pdf/'.$id.'.pdf';
-                $s3PDFFileExists =  S3Helper::fileExists($pdfFile);
-
-                if ($s3PDFFileExists['status'])  {
-                    $file = file_get_contents($s3PDFFileExists['data']['url']);
-                    $encoded = base64_encode($file);
-                    $specialChar = ['&', '"', '<', '>']; 
-		            $specialCharEntity = ['&amp;', '&quot;', '&lt;', '&gt;']; 
-		            $premodel->manufacturer = str_ireplace($specialChar, $specialCharEntity, $premodel->manufacturer);
-
-                    $soapUrl = "https://docmwebtop.itgi.co.in/WSDCTMUpload/services/DCTMWebServiceImpl?wsdl"; // asmx URL of WSDL
-
-                    $soapString = '<?xml version="1.0" encoding="UTF-8"?>
-                    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.web.itgi.com">
-                    <soapenv:Header/>
-                    <soapenv:Body>
-                    <ser:upload>
-                    <!--1 or more repetitions:-->
-                    <ser:webContents>            
-                    <ser:content>'.$encoded.'</ser:content>
-                    <ser:metadata>
-                    <!--Zero or more repetitions:-->
-                    <item>
-                    <key>source</key>
-                    <value>upreinsp</value>
-                    </item>
-                    <item>
-                    <key>preinsp_id</key>
-                    <value>'.$premodel->contactPersonMobileNo.'</value>
-                    </item>
-                    <item>
-                    <key>product</key>
-                    <value>'.$premodel->manufacturer.'</value>
-                    </item>
-                    <item>     
-                    <key>file_name</key>
-                    <value>'.$id.'.pdf</value>
-                    </item>
-                    <item>
-                    <key>doc_code</key>
-                    <value>RC</value>
-                    </item>             
-                    </ser:metadata>
-                    </ser:webContents>
-                    </ser:upload>
-                    </soapenv:Body>
-                    </soapenv:Envelope>';   // data from the form, e.g. some ID number
-                    $actionUrl=$soapUrl;
-                    $response = $this->curlRequest($soapUrl,$actionUrl,$soapString);
-                    $this->log($premodel->contactPersonMobileNo,$response);
-
-                    /*
-                    // converting
-                    $response1 = str_replace("<soap:Body>","",$response);
-                    $response2 = str_replace("</soap:Body>","",$response1);
-                    
-                    // convertingc to XML
-                    $parser = simplexml_load_string($response2);
-                    */
-                    
-                }
-                
-            }
-
-            else if ($premodel->insurerName == 10 || $premodel->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-            {
-                // $url = "https://www.royalsundaram.net/iLoungeServices/virintegration/updateVirCaseStatus";  // Test  
-                $url = "https://www.royalsundaram.in/iLoungeServices/virintegration/updateVirCaseStatus";    // Production 
-                // $resp = $this->rsCurlRequest($url, json_encode($apiData));
-                $resp = $this->rsCurlRequest($url, json_encode($apiData));
-
-                // Check if the response is an array
-                if (is_array($resp)) {
-                    $testRes = (object) $resp; // Convert array to object
-                    $testResJSON = json_encode($testRes); // Encode object to JSON
-                    $this->log($premodel->contactPersonMobileNo, $testResJSON, json_encode($apiData));
-                } else {
-                    // If the response is not an array, log or handle accordingly
-                    $this->log($premodel->contactPersonMobileNo, $resp, json_encode($apiData));
-                }
+            //     // Check if the response is an array
+            //     if (is_array($resp)) {
+            //         $testRes = (object) $resp; // Convert array to object
+            //         $testResJSON = json_encode($testRes); // Encode object to JSON
+            //         $this->log($premodel->contactPersonMobileNo, $testResJSON, json_encode($apiData));
+            //     } else {
+            //         // If the response is not an array, log or handle accordingly
+            //         $this->log($premodel->contactPersonMobileNo, $resp, json_encode($apiData));
+            //     }
 
                 
-                // $this->log($premodel->contactPersonMobileNo, @$resp, json_encode($apiData));
+            //     // $this->log($premodel->contactPersonMobileNo, @$resp, json_encode($apiData));
 
-                if($premodel->status == 101)
-                {                  
-                    $message = 'RSA VIR Status- Vehicle NO '.$premodel->registrationNo.' Ref No '.$premodel->contactPersonMobileNo.' status is RECOMMENDED Please download the report in I-lounge By Axion';
-                }
-                else if($premodel->status == 102)
-                {                  
-                    $message = 'RSA VIR Status- Vehicle NO '.$premodel->registrationNo.' Ref No '.$premodel->contactPersonMobileNo.' status is NOT RECOMMENDED Please download the report in I-lounge By Axion';
-                }
+            //     if($premodel->status == 101)
+            //     {                  
+            //         $message = 'RSA VIR Status- Vehicle NO '.$premodel->registrationNo.' Ref No '.$premodel->contactPersonMobileNo.' status is RECOMMENDED Please download the report in I-lounge By Axion';
+            //     }
+            //     else if($premodel->status == 102)
+            //     {                  
+            //         $message = 'RSA VIR Status- Vehicle NO '.$premodel->registrationNo.' Ref No '.$premodel->contactPersonMobileNo.' status is NOT RECOMMENDED Please download the report in I-lounge By Axion';
+            //     }
 
-                //Sending sms to customer
-                $this->sendSms(@$premodel->callerMobileNo, $message);
+            //     //Sending sms to customer
+            //     $this->sendSms(@$premodel->callerMobileNo, $message);
                 
-                $emailSubject = 'VEHICLE NO: '.$premodel->registrationNo.'/'.$premodel->referenceNo.' - STATUS';
-                $emailMessage = '<strong>Dear Sir/Madam,<br><br>'. $message .'</strong>';
-                $emailMessage .= '<br><p>Thanks & Regards,</p>';
-                $emailMessage .= '<h4>Axion Technical Services</h4>';
-                $smailer=\Yii::$app->googlemailer->compose('../views/site/about',['message' =>$emailMessage]);
-                if($smailer)
-                {
-                    $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
-                    ->setTo(@$agentEmail) //manual.PI@godigit.com mythili.gopi@axionpcs.in
-                    ->setSubject($emailSubject);
-                    $smailer->send();
-                }
-            }
+            //     $emailSubject = 'VEHICLE NO: '.$premodel->registrationNo.'/'.$premodel->referenceNo.' - STATUS';
+            //     $emailMessage = '<strong>Dear Sir/Madam,<br><br>'. $message .'</strong>';
+            //     $emailMessage .= '<br><p>Thanks & Regards,</p>';
+            //     $emailMessage .= '<h4>Axion Technical Services</h4>';
+            //     $smailer=\Yii::$app->googlemailer->compose('../views/site/about',['message' =>$emailMessage]);
+            //     if($smailer)
+            //     {
+            //         $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
+            //         ->setTo(@$agentEmail) //manual.PI@godigit.com mythili.gopi@axionpcs.in
+            //         ->setSubject($emailSubject);
+            //         $smailer->send();
+            //     }
+            // }
                                 
-            if($premodel->insurerName == 12)
-            {
-                $pdfFile = getcwd().'/api-uploads/pdf/'.$id.'.pdf';
-                if($smailer)
-                    $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
-                    //->setTo("mythili.gopi@axionpcs.in") //manual.PI@godigit.com mythili.gopi@axionpcs.in
-                ->setTo("manual.PI@godigit.com")
-                ->setSubject($Subject);
-                if (file_exists($pdfFile))  
-                {
-                    $smailer->attach($pdfFile, ['fileName' =>'report_pdf.pdf','contentType'
-                        => 'text/pdf']);
-                }
-                // foreach($attachment as $file => $x_value) {
-                    // $upload = AxionPreinspectionPhotos::findOne(['preinspection_id' => $id,'type' => $file]);
-                    $uploads = AxionPreinspectionPhotos::find()->where(['preinspection_id' => $id])->andWhere(['!=','image',''])->all();
-                    foreach($uploads as $upload){
-                        if(isset($upload) and isset($upload->image) and strlen($upload -> image) > 0) {
-                            $qcuploadFile = getcwd().'/qcphotos/'.$upload->image;
-                            $compressedFile = getcwd().'/compressed_qcphotos/'.$upload->image;                            
-                            if (file_exists($qcuploadFile)){
-                                $Image = sprintf('./qcphotos/%s',$upload->image);  
-                            }else{
-                                $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
-                            }
-                            if($file == 'vehicleVideo'){
-                                $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
-                            }
-                            else {
-                                $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'image/jpeg']);
-                            }
-                        }
-                    }
-                // }
-                // attach file from local file system
-                $smailer->send();
-            }
+            // if($premodel->insurerName == 12)
+            // {
+            //     $pdfFile = getcwd().'/api-uploads/pdf/'.$id.'.pdf';
+            //     if($smailer)
+            //         $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
+            //         //->setTo("mythili.gopi@axionpcs.in") //manual.PI@godigit.com mythili.gopi@axionpcs.in
+            //     ->setTo("manual.PI@godigit.com")
+            //     ->setSubject($Subject);
+            //     if (file_exists($pdfFile))  
+            //     {
+            //         $smailer->attach($pdfFile, ['fileName' =>'report_pdf.pdf','contentType'
+            //             => 'text/pdf']);
+            //     }
+            //     // foreach($attachment as $file => $x_value) {
+            //         // $upload = AxionPreinspectionPhotos::findOne(['preinspection_id' => $id,'type' => $file]);
+            //         $uploads = AxionPreinspectionPhotos::find()->where(['preinspection_id' => $id])->andWhere(['!=','image',''])->all();
+            //         foreach($uploads as $upload){
+            //             if(isset($upload) and isset($upload->image) and strlen($upload -> image) > 0) {
+            //                 $qcuploadFile = getcwd().'/qcphotos/'.$upload->image;
+            //                 $compressedFile = getcwd().'/compressed_qcphotos/'.$upload->image;                            
+            //                 if (file_exists($qcuploadFile)){
+            //                     $Image = sprintf('./qcphotos/%s',$upload->image);  
+            //                 }else{
+            //                     $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+            //                 }
+            //                 if($file == 'vehicleVideo'){
+            //                     $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
+            //                 }
+            //                 else {
+            //                     $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'image/jpeg']);
+            //                 }
+            //             }
+            //         }
+            //     // }
+            //     // attach file from local file system
+            //     $smailer->send();
+            // }
 
             if($role=='Surveyor')
             {
@@ -1837,20 +1665,20 @@ class AxionPreinspectionController extends Controller
             $apiData['last_modified_date'] = date('Y-m-d h:i:s A', strtotime($premodel->updated_on));
             // 'false' is used for save the data without validation
             if ($premodel->save(false)) {
-                if ($premodel->insurerName == 10 || $premodel->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                {
-                    // $url = "https://www.royalsundaram.net/iLoungeServices/virintegration/updateVirCaseStatus";  // Test  
-                    $url = "https://www.royalsundaram.in/iLoungeServices/virintegration/updateVirCaseStatus";    // Production 
-                    $resp = $this->rsCurlRequest($url, json_encode($apiData));
-                    if (is_array($resp)) {
-                        $testRes = (object) $resp; // Convert array to object
-                        $testResJSON = json_encode($testRes); // Encode object to JSON
-                        $this->log($premodel->contactPersonMobileNo, $testResJSON, json_encode($apiData));
-                    } else {
-                        // If the response is not an array, log or handle accordingly
-                        $this->log($premodel->contactPersonMobileNo, $resp, json_encode($apiData));
-                    }
-                }
+                // if ($premodel->insurerName == 10 || $premodel->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                // {
+                //     // $url = "https://www.royalsundaram.net/iLoungeServices/virintegration/updateVirCaseStatus";  // Test  
+                //     $url = "https://www.royalsundaram.in/iLoungeServices/virintegration/updateVirCaseStatus";    // Production 
+                //     $resp = $this->rsCurlRequest($url, json_encode($apiData));
+                //     if (is_array($resp)) {
+                //         $testRes = (object) $resp; // Convert array to object
+                //         $testResJSON = json_encode($testRes); // Encode object to JSON
+                //         $this->log($premodel->contactPersonMobileNo, $testResJSON, json_encode($apiData));
+                //     } else {
+                //         // If the response is not an array, log or handle accordingly
+                //         $this->log($premodel->contactPersonMobileNo, $resp, json_encode($apiData));
+                //     }
+                // }
                 Yii::$app->session->setFlash('Success','You have successfully saved all photos. You may close the application by clicking "Close" button.');
             } else {
                 Yii::$app->session->setFlash('Failure','Something Went Wrong...');
@@ -1950,21 +1778,21 @@ class AxionPreinspectionController extends Controller
             }
             
             // For TATA AIG
-            if ($premodel->insurerName == 5) {
-                $billingRow = AxionPreinspectionBilling::find()->where(['companyId' => $premodel->insurerName])
-                        ->andWhere(['stateId' => $user->stateId])
-                        ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->intimationDate))])
-                        ->andWhere(['>=', 'billPeriodTo', date('Y-m-d', strtotime($premodel->intimationDate))])
-                        ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])
-                        ->andWhere(['>=', 'DATE_ADD(`billPeriodTo`, INTERVAL 5 DAY)', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])->one();
+            // if ($premodel->insurerName == 5) {
+            //     $billingRow = AxionPreinspectionBilling::find()->where(['companyId' => $premodel->insurerName])
+            //             ->andWhere(['stateId' => $user->stateId])
+            //             ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->intimationDate))])
+            //             ->andWhere(['>=', 'billPeriodTo', date('Y-m-d', strtotime($premodel->intimationDate))])
+            //             ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])
+            //             ->andWhere(['>=', 'DATE_ADD(`billPeriodTo`, INTERVAL 5 DAY)', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])->one();
 
-            }
-            else {
+            // }
+            // else {
                 $billingRow = AxionPreinspectionBilling::find()->where(['companyId' => $premodel->insurerName])
                         ->andWhere(['stateId' => $user->stateId])
                         ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])
                         ->andWhere(['>=', 'billPeriodTo', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])->one();
-            }
+            // }
             
             //echo $billingRow->createCommand()->getRawSql();exit;
             if ($billingRow) {
@@ -2003,14 +1831,14 @@ class AxionPreinspectionController extends Controller
                 }
 
                 // For Royal sundaram KM will be claculated only it is > 50
-                if ( ($premodel->insurerName != 10 && trim($premodel->extraKM) > 0) 
-                    || ($premodel->insurerName == 10 && trim($premodel->extraKM) >= 50) ) {
+                // if ( ($premodel->insurerName != 10 && trim($premodel->extraKM) > 0) 
+                //     || ($premodel->insurerName == 10 && trim($premodel->extraKM) >= 50) ) {
 
-                    $billDetails->totalKm += trim($premodel->extraKM);
-                    if (!empty($billParentDetails)) {
-                        $billParentDetails->totalKm += trim($premodel->extraKM);
-                    }
-                } 
+                //     $billDetails->totalKm += trim($premodel->extraKM);
+                //     if (!empty($billParentDetails)) {
+                //         $billParentDetails->totalKm += trim($premodel->extraKM);
+                //     }
+                // } 
 
                 $premodel->billId = $billingRow->id;
                 $premodel->billStatus = 'Initiated';
@@ -2032,45 +1860,45 @@ class AxionPreinspectionController extends Controller
             }
 
             // For Royal sundaram KM will be claculated only it is > 50
-            if ($premodel->insurerName == 10) {
-                if ($premodel->extraKM >= 50 && $oldExtraKM < 50) {
-                    // Here addition or subtraction will happen depends on $oldExtraKM value
-                    $billDetails->totalKm += $premodel->extraKM;
+            // if ($premodel->insurerName == 10) {
+            //     if ($premodel->extraKM >= 50 && $oldExtraKM < 50) {
+            //         // Here addition or subtraction will happen depends on $oldExtraKM value
+            //         $billDetails->totalKm += $premodel->extraKM;
 
-                    if (!empty($billParentDetails)) {
-                        $billParentDetails->totalKm += $premodel->extraKM;
-                    }
-                }
-                else if ($premodel->extraKM < 50 && $oldExtraKM >= 50) {
-                    $updatedExtraKM = -$oldExtraKM;
+            //         if (!empty($billParentDetails)) {
+            //             $billParentDetails->totalKm += $premodel->extraKM;
+            //         }
+            //     }
+            //     else if ($premodel->extraKM < 50 && $oldExtraKM >= 50) {
+            //         $updatedExtraKM = -$oldExtraKM;
                     
-                    // Here addition or subtraction will happen depends on $oldExtraKM value
-                    $billDetails->totalKm += $updatedExtraKM;
+            //         // Here addition or subtraction will happen depends on $oldExtraKM value
+            //         $billDetails->totalKm += $updatedExtraKM;
 
-                    if (!empty($billParentDetails)) {
-                        $billParentDetails->totalKm += $updatedExtraKM;
-                    }
-                }
-                else if ($premodel->extraKM >= 50 && $oldExtraKM >= 50) {
-                    $updatedExtraKM = trim($premodel->extraKM) - trim($oldExtraKM);
+            //         if (!empty($billParentDetails)) {
+            //             $billParentDetails->totalKm += $updatedExtraKM;
+            //         }
+            //     }
+            //     else if ($premodel->extraKM >= 50 && $oldExtraKM >= 50) {
+            //         $updatedExtraKM = trim($premodel->extraKM) - trim($oldExtraKM);
 
-                    // Here addition or subtraction will happen depends on $oldExtraKM value
-                    $billDetails->totalKm += $updatedExtraKM;
+            //         // Here addition or subtraction will happen depends on $oldExtraKM value
+            //         $billDetails->totalKm += $updatedExtraKM;
 
-                    if (!empty($billParentDetails)) {
-                        $billParentDetails->totalKm += $updatedExtraKM;
-                    }
-                }
-            }
-            else {
-                $updatedExtraKM = trim($premodel->extraKM) - trim($oldExtraKM);
+            //         if (!empty($billParentDetails)) {
+            //             $billParentDetails->totalKm += $updatedExtraKM;
+            //         }
+            //     }
+            // }
+            // else {
+            // }
+            $updatedExtraKM = trim($premodel->extraKM) - trim($oldExtraKM);
 
-                // Here addition or subtraction will happen depends on $oldExtraKM value
-                $billDetails->totalKm += $updatedExtraKM;
+            // Here addition or subtraction will happen depends on $oldExtraKM value
+            $billDetails->totalKm += $updatedExtraKM;
 
-                if (!empty($billParentDetails)) {
-                    $billParentDetails->totalKm += $updatedExtraKM;
-                }
+            if (!empty($billParentDetails)) {
+                $billParentDetails->totalKm += $updatedExtraKM;
             }
 
         }
@@ -2153,21 +1981,21 @@ class AxionPreinspectionController extends Controller
                 }
                 
                 // For TATA AIG
-                if ($premodel->insurerName == 5) {
-                    $billingRow = AxionPreinspectionBilling::find()->where(['companyId' => $premodel->insurerName])
-                            ->andWhere(['stateId' => $user->stateId])
-                            ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->intimationDate))])
-                            ->andWhere(['>=', 'billPeriodTo', date('Y-m-d', strtotime($premodel->intimationDate))])
-                            ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])
-                            ->andWhere(['>=', 'DATE_ADD(`billPeriodTo`, INTERVAL 5 DAY)', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])->one();
+                // if ($premodel->insurerName == 5) {
+                //     $billingRow = AxionPreinspectionBilling::find()->where(['companyId' => $premodel->insurerName])
+                //             ->andWhere(['stateId' => $user->stateId])
+                //             ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->intimationDate))])
+                //             ->andWhere(['>=', 'billPeriodTo', date('Y-m-d', strtotime($premodel->intimationDate))])
+                //             ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])
+                //             ->andWhere(['>=', 'DATE_ADD(`billPeriodTo`, INTERVAL 5 DAY)', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])->one();
 
-                }
-                else {
+                // }
+                // else {
                     $billingRow = AxionPreinspectionBilling::find()->where(['companyId' => $premodel->insurerName])
                             ->andWhere(['stateId' => $user->stateId])
                             ->andWhere(['<=', 'billPeriodFrom', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])
                             ->andWhere(['>=', 'billPeriodTo', date('Y-m-d', strtotime($premodel->completedSurveyDateTime))])->one();
-                }
+                // }
                 
                 //echo $billingRow->createCommand()->getRawSql();exit;
                 if ($billingRow) {
@@ -2206,14 +2034,14 @@ class AxionPreinspectionController extends Controller
                     }
 
                     // For Royal sundaram KM will be claculated only it is > 50
-                    if ( ($premodel->insurerName != 10 && trim($premodel->extraKM) > 0) 
-                        || ($premodel->insurerName == 10 && trim($premodel->extraKM) >= 50) ) {
+                    // if ( ($premodel->insurerName != 10 && trim($premodel->extraKM) > 0) 
+                    //     || ($premodel->insurerName == 10 && trim($premodel->extraKM) >= 50) ) {
 
-                        $billDetails->totalKm += trim($premodel->extraKM);
-                        if (!empty($billParentDetails)) {
-                            $billParentDetails->totalKm += trim($premodel->extraKM);
-                        }
-                    } 
+                    //     $billDetails->totalKm += trim($premodel->extraKM);
+                    //     if (!empty($billParentDetails)) {
+                    //         $billParentDetails->totalKm += trim($premodel->extraKM);
+                    //     }
+                    // } 
 
                     $premodel->billId = $billingRow->id;
                     $premodel->billStatus = 'Initiated';
@@ -2353,13 +2181,13 @@ class AxionPreinspectionController extends Controller
             $callerModel = false; 
 
         $qcLoc = \Yii::$app->params['qcLoc'];
-        $clientName = '';
-        if($premodel->insurerName == 9 || $premodel->insurerName == 15 || $premodel->insurerName == 22 || $premodel->insurerName == 23 || $premodel->insurerName == 24)
-        {
-            $clientName = \Yii::$app->params['siatraclientName'];
-        }else{
-            $clientName = \Yii::$app->params['clientName'];
-        }
+        // $clientName = '';
+        // if($premodel->insurerName == 9 || $premodel->insurerName == 15 || $premodel->insurerName == 22 || $premodel->insurerName == 23 || $premodel->insurerName == 24)
+        // {
+        // }else{
+        //     $clientName = \Yii::$app->params['clientName'];
+        // }
+        $clientName = \Yii::$app->params['siatraclientName'];
         
         $pdf = new Pdf([
             'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
@@ -3376,59 +3204,7 @@ class AxionPreinspectionController extends Controller
                 // $attachment = array("chassisThumb"=>"chp.jpg","rcCopy"=>"rcb1.jpg","preInsuranceCopy"=>"rcb2.jpg","cngLpgKit"=>"cng.jpg","rightSideFullView"=>"rs.jpg","rearViewImage"=>"bs.jpg","enginePhoto"=>"ecr.jpg","dashBoardPhoto"=>"dbd.jpg","frontLeftCorner45"=>"flc.jpg","leftSideFullView"=>"ls.jpg","leftQtrPanel"=>"blc.jpg","rightQtrPanel"=>"brc.jpg","frontRightCorner45"=>"frc.jpg","frontViewNumberPlate"=>"ws.jpg","frontViewNumberPlate"=>"fs.jpg","vehicleVideo"=>"video.mp4");
 
 
-                if($model->insurerName == 9 || $model->insurerName == "IFFCO TOKIO GENERAL INSURANCE CO. LTD.") {
-                    //$report = $itgiStatus;
-                    $status =$model->status;
-                    $report='';
-                    if($status == 101)
-                    {
-                        $report = 'Report Recommended';
-                    }
-                    else if($status == 102)
-                    {
-                        $report = 'Report Not Recommended';
-                    }
-                    else if($status == 104)
-                    {
-                        $report = 'Report Referred To Underwriter';
-                    }
-
-                    if($report){
-                        $url = "https://sampark.itgi.co.in/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
-                        date_default_timezone_set('Asia/Kolkata');
-                        $inspectionDatetime = date("m/d/Y h:i:s");
-                        $specialChar = ['&', '"', '<', '>']; 
-		                $specialCharEntity = ['&amp;', '&quot;', '&lt;', '&gt;']; 
-		                $model->remarks = str_ireplace($specialChar, $specialCharEntity, $model->remarks);
-
-                        $str = '<?xml version="1.0" encoding="UTF-8"?>
-                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cus="http://siebel.com/CustomUI">
-                        <soapenv:Header/>
-                        <soapenv:Body>
-                        <cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                        <!--Optional:-->
-                        <cus:LatitudeLongitude></cus:LatitudeLongitude>
-                        <cus:PreInspectionNumber>'.$model->contactPersonMobileNo.'</cus:PreInspectionNumber>
-                        <cus:RecommendationResponse>'.$report.'</cus:RecommendationResponse>
-                        <cus:InspectionLocation>'.$model->surveyLocation.'</cus:InspectionLocation>
-                        <cus:PreInspectionIntegrationId>2</cus:PreInspectionIntegrationId>
-                        <!--Optional:-->
-                        <cus:Remarks>'.$model->remarks.'</cus:Remarks>
-                        <!--Optional:-->
-                        <cus:ChassisNumber>'.$model->chassisNo.'</cus:ChassisNumber>
-                        <!--Optional:-->
-                        <cus:EngineNumber>'.$model->engineNo.'</cus:EngineNumber>
-                        <!--Optional:-->
-                        <cus:InspectionDateTime>'.$inspectionDatetime.'</cus:InspectionDateTime>
-                        </cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                        </soapenv:Body>
-                        </soapenv:Envelope>';
-                        $actionUrl = 'document/http://siebel.com/CustomUI:ITGIMotorPreInspectionAgencyRecommendationResponse';
-                        $resp = $this->curlRequest($url,$actionUrl,$str);
-                        $this->log($model->contactPersonMobileNo,$resp,$str);
-                    }
-
-                }
+                
                 // if($model->insurerName == 7)
                 // {
                 // $pdfFile = getcwd().'/api-uploads/pdf/'.$id.'.pdf';
@@ -3643,59 +3419,59 @@ class AxionPreinspectionController extends Controller
                 }
 
 
-                if($model->insurerName == 9 || $model->insurerName == "IFFCO TOKIO GENERAL INSURANCE CO. LTD.") {
+                // if($model->insurerName == 9 || $model->insurerName == "IFFCO TOKIO GENERAL INSURANCE CO. LTD.") {
 
-                    $status =$model->status;
-                    $report='';
+                //     $status =$model->status;
+                //     $report='';
 
-                    if($status == 101)
-                    {
-                        $report = 'Report Recommended';
-                    }
-                    else if($status == 102)
-                    {
-                        $report = 'Report Not Recommended';
-                    }
-                    else if($status == 104)
-                    {
-                        $report = 'Report Referred To Underwriter';
-                    }
+                //     if($status == 101)
+                //     {
+                //         $report = 'Report Recommended';
+                //     }
+                //     else if($status == 102)
+                //     {
+                //         $report = 'Report Not Recommended';
+                //     }
+                //     else if($status == 104)
+                //     {
+                //         $report = 'Report Referred To Underwriter';
+                //     }
 
-                    if($report){
-                        $url = "https://sampark.itgi.co.in/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
-                        date_default_timezone_set('Asia/Kolkata');
-                        $inspectionDatetime = date("m/d/Y h:i:s");
-                        $specialChar = ['&', '"', '<', '>']; 
-		                $specialCharEntity = ['&amp;', '&quot;', '&lt;', '&gt;']; 
-		                $premodel->remarks = str_ireplace($specialChar, $specialCharEntity, $premodel->remarks);
+                //     if($report){
+                //         $url = "https://sampark.itgi.co.in/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
+                //         date_default_timezone_set('Asia/Kolkata');
+                //         $inspectionDatetime = date("m/d/Y h:i:s");
+                //         $specialChar = ['&', '"', '<', '>']; 
+		        //         $specialCharEntity = ['&amp;', '&quot;', '&lt;', '&gt;']; 
+		        //         $premodel->remarks = str_ireplace($specialChar, $specialCharEntity, $premodel->remarks);
 
-                        $str = '<?xml version="1.0" encoding="UTF-8"?>
-                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cus="http://siebel.com/CustomUI">
-                        <soapenv:Header/>
-                        <soapenv:Body>
-                        <cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                        <!--Optional:-->
-                        <cus:LatitudeLongitude></cus:LatitudeLongitude>
-                        <cus:PreInspectionNumber>'.$premodel->contactPersonMobileNo.'</cus:PreInspectionNumber>
-                        <cus:RecommendationResponse>'.$report.'</cus:RecommendationResponse>
-                        <cus:InspectionLocation>'.$premodel->surveyLocation.'</cus:InspectionLocation>
-                        <cus:PreInspectionIntegrationId>2</cus:PreInspectionIntegrationId>
-                        <!--Optional:-->
-                        <cus:Remarks>'.$premodel->remarks.'</cus:Remarks>
-                        <!--Optional:-->
-                        <cus:ChassisNumber>'.$premodel->chassisNo.'</cus:ChassisNumber>
-                        <!--Optional:-->
-                        <cus:EngineNumber>'.$premodel->engineNo.'</cus:EngineNumber>
-                        <!--Optional:-->
-                        <cus:InspectionDateTime>'.$inspectionDatetime.'</cus:InspectionDateTime>
-                        </cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                        </soapenv:Body>
-                        </soapenv:Envelope>';
-                        $actionUrl = 'document/http://siebel.com/CustomUI:ITGIMotorPreInspectionAgencyRecommendationResponse';
-                        $resp = $this->curlRequest($url,$actionUrl,$str);
-                        $this->log($model->contactPersonMobileNo,$resp,$str);
-                    }
-                }
+                //         $str = '<?xml version="1.0" encoding="UTF-8"?
+                //         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cus="http://siebel.com/CustomUI">
+                //         <soapenv:Header/>
+                //         <soapenv:Body>
+                //         <cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
+                //         <!--Optional:-->
+                //         <cus:LatitudeLongitude></cus:LatitudeLongitude>
+                //         <cus:PreInspectionNumber>'.$premodel->contactPersonMobileNo.'</cus:PreInspectionNumber>
+                //         <cus:RecommendationResponse>'.$report.'</cus:RecommendationResponse>
+                //         <cus:InspectionLocation>'.$premodel->surveyLocation.'</cus:InspectionLocation>
+                //         <cus:PreInspectionIntegrationId>2</cus:PreInspectionIntegrationId>
+                //         <!--Optional:-->
+                //         <cus:Remarks>'.$premodel->remarks.'</cus:Remarks>
+                //         <!--Optional:-->
+                //         <cus:ChassisNumber>'.$premodel->chassisNo.'</cus:ChassisNumber>
+                //         <!--Optional:-->
+                //         <cus:EngineNumber>'.$premodel->engineNo.'</cus:EngineNumber>
+                //         <!--Optional:-->
+                //         <cus:InspectionDateTime>'.$inspectionDatetime.'</cus:InspectionDateTime>
+                //         </cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
+                //         </soapenv:Body>
+                //         </soapenv:Envelope>';
+                //         $actionUrl = 'document/http://siebel.com/CustomUI:ITGIMotorPreInspectionAgencyRecommendationResponse';
+                //         $resp = $this->curlRequest($url,$actionUrl,$str);
+                //         $this->log($model->contactPersonMobileNo,$resp,$str);
+                //     }
+                // }
 
                 if($role == 'Commonuser'){
                     return $this->redirect(['vehicleqc', 'id' => $model->id]);
@@ -3961,176 +3737,176 @@ class AxionPreinspectionController extends Controller
         $umodel = User::findOne(Yii::$app->user->identity->id);
         $vehicleModel = AxionPreinspectionVehicle::find()->where(['preinspection_id' => $model->id])->one();
 
-        if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-        {
-            $postData = Yii::$app->request->post();
+        // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+        // {
+        //     $postData = Yii::$app->request->post();
 
-            if ($model->chassisNo != $postData['AxionPreinspection']['chassisNo'])
-            {
-                $apiData['chassis_number'] = $postData['AxionPreinspection']['chassisNo'];
-            }
-            if ($model->engineNo != $postData['AxionPreinspection']['engineNo'])
-            {
-                $apiData['engine_number'] = $postData['AxionPreinspection']['engineNo'];
-            }
-            if ($model->registrationNo != $postData['AxionPreinspection']['registrationNo'])
-            {
-                $apiData['registration_number'] = $postData['AxionPreinspection']['registrationNo'];
-            }
-            // if ($model->status != $postData['AxionPreinspection']['status'])
-            // {
-                switch($postData['AxionPreinspection']['status'])
-                {
-                    case 0:
-                        $rsStatus = 'Case Created';
-                        break;
+        //     if ($model->chassisNo != $postData['AxionPreinspection']['chassisNo'])
+        //     {
+        //         $apiData['chassis_number'] = $postData['AxionPreinspection']['chassisNo'];
+        //     }
+        //     if ($model->engineNo != $postData['AxionPreinspection']['engineNo'])
+        //     {
+        //         $apiData['engine_number'] = $postData['AxionPreinspection']['engineNo'];
+        //     }
+        //     if ($model->registrationNo != $postData['AxionPreinspection']['registrationNo'])
+        //     {
+        //         $apiData['registration_number'] = $postData['AxionPreinspection']['registrationNo'];
+        //     }
+        //     // if ($model->status != $postData['AxionPreinspection']['status'])
+        //     // {
+        //         switch($postData['AxionPreinspection']['status'])
+        //         {
+        //             case 0:
+        //                 $rsStatus = 'Case Created';
+        //                 break;
                     
-                    case 1:
-                        $rsStatus = 'Reassigned';
-                        break;
+        //             case 1:
+        //                 $rsStatus = 'Reassigned';
+        //                 break;
 
-                    case 9:
-                        $rsStatus = 'Rejected';
-                        break;
+        //             case 9:
+        //                 $rsStatus = 'Rejected';
+        //                 break;
 
-                    case 8:
-                        $rsStatus = 'QC Pending';
-                        break;
+        //             case 8:
+        //                 $rsStatus = 'QC Pending';
+        //                 break;
 
-                    case 12:
-                        $rsStatus = 'Scheduled'; //Assigned
-                        break;
+        //             case 12:
+        //                 $rsStatus = 'Scheduled'; //Assigned
+        //                 break;
 
-                    case 101:
-                        $rsStatus = 'Recommended';
-                        break;
+        //             case 101:
+        //                 $rsStatus = 'Recommended';
+        //                 break;
 
-                    case 102:
-                        $rsStatus = 'Not Recommended';
-                        break;
+        //             case 102:
+        //                 $rsStatus = 'Not Recommended';
+        //                 break;
 
-                    default:
-                        $rsStatus = 'Case Created';
-                }
+        //             default:
+        //                 $rsStatus = 'Case Created';
+        //         }
 
-                $apiData['status'] = $rsStatus;
-            //}
-            if (!empty($apiData['status']) && $apiData['status'] == 'Reassigned')
-            {
+        //         $apiData['status'] = $rsStatus;
+        //     //}
+        //     if (!empty($apiData['status']) && $apiData['status'] == 'Reassigned')
+        //     {
                 
-                if (!empty($postData['AxionPreinspection']['rescheduleDateTime']))
-                {
-                    $rescheduleDateTimeData = ($postData['AxionPreinspection']['rescheduleDateTime1']) ? $postData['AxionPreinspection']['rescheduleDateTime1']: $postData['AxionPreinspection']['rescheduleDateTime'];                    
-                    $postData['AxionPreinspection']['rescheduleDateTime'] = $rescheduleDateTimeData;
+        //         if (!empty($postData['AxionPreinspection']['rescheduleDateTime']))
+        //         {
+        //             $rescheduleDateTimeData = ($postData['AxionPreinspection']['rescheduleDateTime1']) ? $postData['AxionPreinspection']['rescheduleDateTime1']: $postData['AxionPreinspection']['rescheduleDateTime'];                    
+        //             $postData['AxionPreinspection']['rescheduleDateTime'] = $rescheduleDateTimeData;
                     
-                    $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['rescheduleDateTime']));
-                    //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
-                }
-                else if (!empty($postData['AxionPreinspection']['customerAppointDateTime']))
-                {
-                    $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['customerAppointDateTime']));
-                    //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
-                }
-            }
-            if ($model->manufacturer != $postData['AxionPreinspection']['manufacturer'])
-            {
-                $apiData['vehicle_make'] = $postData['AxionPreinspection']['manufacturer'];
-            }
-            if ($model->model != $postData['AxionPreinspection']['model'])
-            {
-                $apiData['vehicle_model'] = $postData['AxionPreinspection']['model'];
-            }
-            if ($model->manufacturingYear != $postData['AxionPreinspection']['manufacturingYear'])
-            {
-                $apiData['year_of_manufacture'] = $postData['AxionPreinspection']['manufacturingYear'];
-            }
-            //if ($model->remarks != $postData['AxionPreinspection']['remarks'])
-            //{
-                $apiData['remarks'] = $postData['AxionPreinspection']['remarks'];
-            //}
-            //if (($model->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $model->status == 101)
-            //{
-            if ($postData['AxionPreinspection']['status'] == 101 && !empty($postData['AxionPreinspection']['completedSurveyDateTime'])) {
-                $apiData['approvedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
-                //$apiData['approvedDate'] = str_replace('+00:00', '.00', $apiData['approvedDate']);
-            }
-            //}
-            //if (($model->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $model->status == 102)
-            //{
-            if (($postData['AxionPreinspection']['status'] == 102 || $postData['AxionPreinspection']['status'] == 9)) {
-                $apiData['rejectedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
-                //$apiData['rejectedDate'] = str_replace('+00:00', '.00', $apiData['rejectedDate']);
-            }
-            //} 
-            //if ($model->vType != $postData['AxionPreinspectionVehicle']['vType'])
-            //{
-                switch($vehicleModel->vType)
-                {
-                    case '4-WHEELER':
-                        $rsVehicleType = 'Private Car';
-                        break;
+        //             $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['rescheduleDateTime']));
+        //             //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
+        //         }
+        //         else if (!empty($postData['AxionPreinspection']['customerAppointDateTime']))
+        //         {
+        //             $apiData['reassigned_inspection_date'] = date('Y-m-d h:i:s A', strtotime($postData['AxionPreinspection']['customerAppointDateTime']));
+        //             //$apiData['reassigned_inspection_date'] = str_replace('+00:00', '.00', $apiData['reassigned_inspection_date']);
+        //         }
+        //     }
+        //     if ($model->manufacturer != $postData['AxionPreinspection']['manufacturer'])
+        //     {
+        //         $apiData['vehicle_make'] = $postData['AxionPreinspection']['manufacturer'];
+        //     }
+        //     if ($model->model != $postData['AxionPreinspection']['model'])
+        //     {
+        //         $apiData['vehicle_model'] = $postData['AxionPreinspection']['model'];
+        //     }
+        //     if ($model->manufacturingYear != $postData['AxionPreinspection']['manufacturingYear'])
+        //     {
+        //         $apiData['year_of_manufacture'] = $postData['AxionPreinspection']['manufacturingYear'];
+        //     }
+        //     //if ($model->remarks != $postData['AxionPreinspection']['remarks'])
+        //     //{
+        //         $apiData['remarks'] = $postData['AxionPreinspection']['remarks'];
+        //     //}
+        //     //if (($model->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $model->status == 101)
+        //     //{
+        //     if ($postData['AxionPreinspection']['status'] == 101 && !empty($postData['AxionPreinspection']['completedSurveyDateTime'])) {
+        //         $apiData['approvedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
+        //         //$apiData['approvedDate'] = str_replace('+00:00', '.00', $apiData['approvedDate']);
+        //     }
+        //     //}
+        //     //if (($model->completedSurveyDateTime != $postData['AxionPreinspection']['completedSurveyDateTime']) && $model->status == 102)
+        //     //{
+        //     if (($postData['AxionPreinspection']['status'] == 102 || $postData['AxionPreinspection']['status'] == 9)) {
+        //         $apiData['rejectedDate'] = date('Y-m-d h:i:s A', strtotime($currentDateTime));
+        //         //$apiData['rejectedDate'] = str_replace('+00:00', '.00', $apiData['rejectedDate']);
+        //     }
+        //     //} 
+        //     //if ($model->vType != $postData['AxionPreinspectionVehicle']['vType'])
+        //     //{
+        //         switch($vehicleModel->vType)
+        //         {
+        //             case '4-WHEELER':
+        //                 $rsVehicleType = 'Private Car';
+        //                 break;
 
-                    case '2-WHEELER':
-                        $rsVehicleType = 'Two-wheeler';
-                        break;
+        //             case '2-WHEELER':
+        //                 $rsVehicleType = 'Two-wheeler';
+        //                 break;
 
-                    case 'COMMERCIAL':
-                        if (!empty($postData['AxionPreinspectionVehicle']['vCategory']))
-                        {
-                            switch($postData['AxionPreinspectionVehicle']['vCategory'])
-                            {
-                                case 'Passenger Carrying Vehicle':
-                                    $rsVehicleType = 'Passenger Carrying Vehicle';
-                                    break;
+        //             case 'COMMERCIAL':
+        //                 if (!empty($postData['AxionPreinspectionVehicle']['vCategory']))
+        //                 {
+        //                     switch($postData['AxionPreinspectionVehicle']['vCategory'])
+        //                     {
+        //                         case 'Passenger Carrying Vehicle':
+        //                             $rsVehicleType = 'Passenger Carrying Vehicle';
+        //                             break;
     
-                                case 'Goods Carrying Vehicle':
-                                    $rsVehicleType = 'Goods Carrying Vehicle';
-                                    break;
+        //                         case 'Goods Carrying Vehicle':
+        //                             $rsVehicleType = 'Goods Carrying Vehicle';
+        //                             break;
     
-                                case 'Miscellaneous Vehicle':
-                                    $rsVehicleType = 'Miscellaneous Vehicle';
-                                    break;
+        //                         case 'Miscellaneous Vehicle':
+        //                             $rsVehicleType = 'Miscellaneous Vehicle';
+        //                             break;
     
-                                default:
-                                    $rsVehicleType = 'Private Car';
-                            }
-                            break;
-                        }
-                        else if (!empty($vehicleModel->vCategory))
-                        {
-                            switch($vehicleModel->vCategory)
-                            {
-                                case 'Passenger Carrying Vehicle':
-                                    $rsVehicleType = 'Passenger Carrying Vehicle';
-                                    break;
+        //                         default:
+        //                             $rsVehicleType = 'Private Car';
+        //                     }
+        //                     break;
+        //                 }
+        //                 else if (!empty($vehicleModel->vCategory))
+        //                 {
+        //                     switch($vehicleModel->vCategory)
+        //                     {
+        //                         case 'Passenger Carrying Vehicle':
+        //                             $rsVehicleType = 'Passenger Carrying Vehicle';
+        //                             break;
     
-                                case 'Goods Carrying Vehicle':
-                                    $rsVehicleType = 'Goods Carrying Vehicle';
-                                    break;
+        //                         case 'Goods Carrying Vehicle':
+        //                             $rsVehicleType = 'Goods Carrying Vehicle';
+        //                             break;
     
-                                case 'Miscellaneous Vehicle':
-                                    $rsVehicleType = 'Miscellaneous Vehicle';
-                                    break;
+        //                         case 'Miscellaneous Vehicle':
+        //                             $rsVehicleType = 'Miscellaneous Vehicle';
+        //                             break;
     
-                                default:
-                                    $rsVehicleType = 'Private Car';
-                            }
-                            break;
-                        }                        
-                    default:
-                        $rsVehicleType = 'Private Car';
-                }
+        //                         default:
+        //                             $rsVehicleType = 'Private Car';
+        //                     }
+        //                     break;
+        //                 }                        
+        //             default:
+        //                 $rsVehicleType = 'Private Car';
+        //         }
 
-                $apiData['vehicle_type'] = $rsVehicleType;
+        //         $apiData['vehicle_type'] = $rsVehicleType;
 
-            //} 
-            $apiData['inspected_Start_location'] = $model->surveyLocation ? $model->surveyLocation : $postData['AxionPreinspection']['surveyLocation'];
-            $apiData['inspected_Location'] = $model->surveyLocation2 ? $model->surveyLocation2 : $postData['AxionPreinspection']['surveyLocation2'];
-            $apiData['no_of_Kilometers'] = $model->extraKM ? $model->extraKM : $postData['AxionPreinspection']['extraKM'];
+        //     //} 
+        //     $apiData['inspected_Start_location'] = $model->surveyLocation ? $model->surveyLocation : $postData['AxionPreinspection']['surveyLocation'];
+        //     $apiData['inspected_Location'] = $model->surveyLocation2 ? $model->surveyLocation2 : $postData['AxionPreinspection']['surveyLocation2'];
+        //     $apiData['no_of_Kilometers'] = $model->extraKM ? $model->extraKM : $postData['AxionPreinspection']['extraKM'];
 
-            $apiData['vir_case_number'] = $model->contactPersonMobileNo;
-            $apiData['reference_no'] = $model->referenceNo;
-        }
+        //     $apiData['vir_case_number'] = $model->contactPersonMobileNo;
+        //     $apiData['reference_no'] = $model->referenceNo;
+        // }
 
         $umodel = User::findOne(Yii::$app->user->identity->id);
         
@@ -4366,75 +4142,6 @@ class AxionPreinspectionController extends Controller
                 //    //Mail Sent Successfully../qcphotos/22-chassis
                 // }
 
-                if($model->insurerName == 9 || $model->insurerName == "IFFCO TOKIO GENERAL INSURANCE CO. LTD.") {
-                    //$report = $piStatus;
-                    $status =$model->status;
-                    $report='';
-                    if($status == 101)
-                    {
-                        $report = 'Report Recommended';
-                    }
-                    else if($status == 102)
-                    {
-                        $report = 'Report Not Recommended';
-                    }
-                    else if($status == 104)
-                    {
-                        $report = 'Report Referred To Underwriter';
-                    }
-
-                    if($report){
-                                                    //$url = "http://125.22.81.132/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
-                        $url = "https://sampark.itgi.co.in/eai_ws_enu/start.swe?SWEExtSource=WSWebService&SWEExtCmd=Execute";
-                        date_default_timezone_set('Asia/Kolkata');
-                        $inspectionDatetime = date("m/d/Y h:i:s");
-                        $specialChar = ['&', '"', '<', '>']; 
-                        $specialCharEntity = ['&amp;', '&quot;', '&lt;', '&gt;']; 
-                        $model->remarks = str_ireplace($specialChar, $specialCharEntity, $model->remarks);
-
-                        $str = '<?xml version="1.0" encoding="UTF-8"?>
-                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cus="http://siebel.com/CustomUI">
-                        <soapenv:Header/>
-                        <soapenv:Body>
-                        <cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                        <!--Optional:-->
-                        <cus:LatitudeLongitude></cus:LatitudeLongitude>
-                        <cus:PreInspectionNumber>'.$model->contactPersonMobileNo.'</cus:PreInspectionNumber>
-                        <cus:RecommendationResponse>'.$report.'</cus:RecommendationResponse>
-                        <cus:InspectionLocation>'.$model->surveyLocation.'</cus:InspectionLocation>
-                        <cus:PreInspectionIntegrationId>2</cus:PreInspectionIntegrationId>
-                        <!--Optional:-->
-                        <cus:Remarks>'.$model->remarks.'</cus:Remarks>
-                        <!--Optional:-->
-                        <cus:ChassisNumber>'.$model->chassisNo.'</cus:ChassisNumber>
-                        <!--Optional:-->
-                        <cus:EngineNumber>'.$model->engineNo.'</cus:EngineNumber>
-                        <!--Optional:-->
-                        <cus:InspectionDateTime>'.$inspectionDatetime.'</cus:InspectionDateTime>
-                        </cus:ITGIMotorPreInspectionAgencyRecommendationResponse_Input>
-                        </soapenv:Body>
-                        </soapenv:Envelope>';
-                        $actionUrl = 'document/http://siebel.com/CustomUI:ITGIMotorPreInspectionAgencyRecommendationResponse';
-                        $resp = $this->curlRequest($url,$actionUrl,$str);
-                        $this->log($model->contactPersonMobileNo,$resp,$str);
-                    }
-
-                }
-                else if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                {
-                    // $url = "https://www.royalsundaram.net/iLoungeServices/virintegration/updateVirCaseStatus";  // Test  
-                    $url = "https://www.royalsundaram.in/iLoungeServices/virintegration/updateVirCaseStatus";    // Production       
-                    $resp = $this->rsCurlRequest($url, json_encode($apiData));
-                    if (is_array($resp)) {
-                        $testRes = (object) $resp; // Convert array to object
-                        $testResJSON = json_encode($testRes); // Encode object to JSON
-                        $this->log($premodel->contactPersonMobileNo, $testResJSON, json_encode($apiData));
-                    } else {
-                        // If the response is not an array, log or handle accordingly
-                        $this->log($premodel->contactPersonMobileNo, $resp, json_encode($apiData));
-                    }
-                }
-
                 $insuredUser = User::findOne(['mobile' => @$model->insuredMobile]);
 
                 //sending sms
@@ -4446,21 +4153,21 @@ class AxionPreinspectionController extends Controller
                     
                     $mobileno = $model->callerMobileNo;
 
-                    if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                    {
-                        $message = 'RSA VIR Status - Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.' has been scheduled on '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime )).' surveyor Name '.$rs_surveyor_name .' by Axion';
-                        //sending sms to customer
-                        $this->sendSms(@$model->insuredMobile, $message);
+                    // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                    // {
+                    //     $message = 'RSA VIR Status - Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.' has been scheduled on '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime )).' surveyor Name '.$rs_surveyor_name .' by Axion';
+                    //     //sending sms to customer
+                    //     $this->sendSms(@$model->insuredMobile, $message);
 
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $message);                         
-                    }
-                    else
-                    {
-                        $message = 'STATUS- '.$model->registrationNo.'/'.$model->referenceNo.' SCHEDULE APP - '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime )).' SURVEYOR NAME:('.$surveyor_name.') '.$additionalSmsMessage.' By Axion';
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $message); 
-                    } 
+                    //     //sending sms to agent
+                    //     $this->sendSms($mobileno, $message);                         
+                    // }
+                    // else
+                    // {
+                    // } 
+                    $message = 'STATUS- '.$model->registrationNo.'/'.$model->referenceNo.' SCHEDULE APP - '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime )).' SURVEYOR NAME:('.$surveyor_name.') '.$additionalSmsMessage.' By Axion';
+                    //sending sms to agent
+                    $this->sendSms($mobileno, $message); 
 
                     //sending sms to surveyor
                     $surveyor_message = $model->referenceNo.' '.$model->insuredName.' '.$model->contactPersonMobileNo.' '.$model->surveyLocation.' '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime ));
@@ -4489,13 +4196,13 @@ class AxionPreinspectionController extends Controller
                             ->setSubject($emailSubject);
                             $smailer->send();
 
-                            if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                            {
-                                $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
-                                ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
-                                ->setSubject($emailSubject);
-                                $smailer->send();
-                            }
+                            // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                            // {
+                            //     $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
+                            //     ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
+                            //     ->setSubject($emailSubject);
+                            //     $smailer->send();
+                            // }
                         }
 
                     }
@@ -4511,21 +4218,21 @@ class AxionPreinspectionController extends Controller
                     $mobileno = $model->callerMobileNo;
                     $message = 'STATUS- '.$model->registrationNo.'/'.$model->referenceNo.' RE - SCHEDULE APP - '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime )).' REASON:'.'('.$model->rescheduleReason.') SURVEYOR NAME:('.$surveyor_name.') '.$additionalSmsMessage.' By Axion';
 
-                    if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                    {
-                        $message = 'RSA VIR Status- Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.' has been Re- scheduled on '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime )).' surveyor Name '.$surveyor_name .' By Axion';
+                    // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                    // {
+                    //     $message = 'RSA VIR Status- Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.' has been Re- scheduled on '.date( 'd/m/Y h:i A', strtotime( $model->customerAppointDateTime )).' surveyor Name '.$surveyor_name .' By Axion';
                         
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $message);
+                    //     //sending sms to agent
+                    //     $this->sendSms($mobileno, $message);
 
-                        //sending sms to customer
-                        $this->sendSms(@$model->insuredMobile, $message);
-                    }
-                    else
-                    {
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $message);
-                    }
+                    //     //sending sms to customer
+                    //     $this->sendSms(@$model->insuredMobile, $message);
+                    // }
+                    // else
+                    // {
+                    // }
+                    //sending sms to agent
+                    $this->sendSms($mobileno, $message);
 
                     //sending sms to surveyor
                     if($lastSurveyorName != $model->surveyorName)
@@ -4556,13 +4263,13 @@ class AxionPreinspectionController extends Controller
                             ->setSubject($emailSubject);
                             $smailer->send();
 
-                            if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                            {
-                                $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
-                                ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
-                                ->setSubject($emailSubject);
-                                $smailer->send();
-                            }
+                            // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                            // {
+                            //     $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
+                            //     ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
+                            //     ->setSubject($emailSubject);
+                            //     $smailer->send();
+                            // }
                         }
                     }
 
@@ -4579,22 +4286,22 @@ class AxionPreinspectionController extends Controller
 
                     $mobileno = $model->callerMobileNo;
                     $message = 'STATUS- '.$model->registrationNo.'/'.$model->referenceNo.' COMPLETED :'.date( 'd/m/Y h:i A', strtotime( $model->completedSurveyDateTime )).' KINDLY DOWNLOAD FROM AXION SITE.'.$additionalSmsMessage.'By Axion Team';
-                    if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                    {
-                        //$message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Completed on '.date( 'd/m/Y h:i A', strtotime( $model->completedSurveyDateTime )).'Report will be shared to insurer shortly. By Axion';
-                        $customer_message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Completed on '.date( 'd/m/Y h:i A', strtotime( $model->completedSurveyDateTime )).'Report will be shared shortly. By Axion';
+                    // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                    // {
+                    //     //$message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Completed on '.date( 'd/m/Y h:i A', strtotime( $model->completedSurveyDateTime )).'Report will be shared to insurer shortly. By Axion';
+                    //     $customer_message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Completed on '.date( 'd/m/Y h:i A', strtotime( $model->completedSurveyDateTime )).'Report will be shared shortly. By Axion';
                         
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $customer_message);
+                    //     //sending sms to agent
+                    //     $this->sendSms($mobileno, $customer_message);
 
-                        //sending sms to customer
-                        $this->sendSms(@$model->insuredMobile, $customer_message);
-                    }
-                    else
-                    {
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $message);
-                    }
+                    //     //sending sms to customer
+                    //     $this->sendSms(@$model->insuredMobile, $customer_message);
+                    // }
+                    // else
+                    // {
+                    // }
+                    //sending sms to agent
+                    $this->sendSms($mobileno, $message);
                     
 
                     if($callerEmail != '')
@@ -4618,13 +4325,13 @@ class AxionPreinspectionController extends Controller
                             ->setSubject($emailSubject);
                             $smailer->send();
 
-                            if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                            {
-                                $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
-                                ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
-                                ->setSubject($emailSubject);
-                                $smailer->send();
-                            }
+                            // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                            // {
+                            //     $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
+                            //     ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
+                            //     ->setSubject($emailSubject);
+                            //     $smailer->send();
+                            // }
                         }
                     }
                 }
@@ -4641,248 +4348,249 @@ class AxionPreinspectionController extends Controller
                     $mobileno = $model->callerMobileNo;
                     $message = 'STATUS- '.$model->registrationNo.'/'.$model->referenceNo.' CANCELLED REASON:('.$cancelledReason.') '.$additionalSmsMessage.' By Axion Team';
                     
-                    if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                    {
-                        $message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Cancelled. Reason:  '.$cancelledReason .' By Axion';
+                    // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                    // {
+                    //     $message = 'RSA VIR Status-Vehicle NO '.$model->registrationNo.' Ref No '.$model->contactPersonMobileNo.'has been Cancelled. Reason:  '.$cancelledReason .' By Axion';
                         
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $message);
+                    //     //sending sms to agent
+                    //     $this->sendSms($mobileno, $message);
 
-                        //sending sms to customer
-                        $this->sendSms(@$model->insuredMobile, $message);
-                    }elseif($model->insurerName == 5 || $model->insurerName == "TATA AIG GENERAL INSURANCE CO.LTD")
-                    {
+                    //     //sending sms to customer
+                    //     $this->sendSms(@$model->insuredMobile, $message);
+                    // }
+                    // ($model->insurerName == 5 || $model->insurerName == "TATA AIG GENERAL INSURANCE CO.LTD")
+                    // {
                         
-                        $status = "Rejected";
+                    //     $status = "Rejected";
     
-                        // if (function_exists('curl_file_create')) {
-                        //     $zipFile = curl_file_create($zipFile);
-                        // } else {  
-                        //   $zipFile = curl_file_create(realpath($zipFile));
-                        // }     
+                    //     // if (function_exists('curl_file_create')) {
+                    //     //     $zipFile = curl_file_create($zipFile);
+                    //     // } else {  
+                    //     //   $zipFile = curl_file_create(realpath($zipFile));
+                    //     // }     
     
-                        // Change the filename to copied zipfile
-                        if($model->uploadPath != ''){
-                            $uploadPath = preg_replace("/\/(\d+)\-/i", "/$1-tata-", $model->uploadPath);
-                        }else{
-                            $dummyZip = getcwd().'/api-uploads/dummy.zip';
-                            $uploadPath = $dummyZip;
-                        }
-                        $sendpath = curl_file_create(realpath($uploadPath));
+                    //     // Change the filename to copied zipfile
+                    //     if($model->uploadPath != ''){
+                    //         $uploadPath = preg_replace("/\/(\d+)\-/i", "/$1-tata-", $model->uploadPath);
+                    //     }else{
+                    //         $dummyZip = getcwd().'/api-uploads/dummy.zip';
+                    //         $uploadPath = $dummyZip;
+                    //     }
+                    //     $sendpath = curl_file_create(realpath($uploadPath));
     
-                        if($model->fristRoid != NULL){
-                            $getstateid = User::find()->where(['id'=>$model->fristRoid])->one();
-                            $stateId = $getstateid->stateId;
-                        }elseif($model->stateId != NULL){
-                            $stateId = $model->stateId;
-                        }else{
-                            $getstateid = User::find()->where(['id'=>$model->userId])->one();
-                            $stateId = $getstateid->stateId;
-                        }
-                        // return $model->createMethod;
-                        if($model->createMethod == 'Api'){
-                            // $testResponse[1] = 'IF API - '.$model->createMethod.' ~~ '.$model->status.' ~~ '.$model->insurerName;
-                            // return $stateId;
-                            switch ($stateId) {
-                                case 1:
-                                    $curlUserid = 'axionkar';
-                                    break;
-                                case 2:
-                                    $curlUserid = 'axion';
-                                    break;
-                                case 3:
-                                    $curlUserid = 'axionker';
-                                    break;
-                                case 5:
-                                    $curlUserid = 'axionap';
-                                break;
-                                case 6:
-                                    $curlUserid = 'axion1';
-                                break;
-                                case 10:
-                                    $curlUserid = 'axionbr';
-                                break;
-                                case 14:
-                                    $curlUserid = 'axiondel';
-                                break;
-                                case 11:
-                                    $curlUserid = 'axionker';
-                                break;
-                                default:
-                                    $curlUserid = 'axion';
-                            }
+                    //     if($model->fristRoid != NULL){
+                    //         $getstateid = User::find()->where(['id'=>$model->fristRoid])->one();
+                    //         $stateId = $getstateid->stateId;
+                    //     }elseif($model->stateId != NULL){
+                    //         $stateId = $model->stateId;
+                    //     }else{
+                    //         $getstateid = User::find()->where(['id'=>$model->userId])->one();
+                    //         $stateId = $getstateid->stateId;
+                    //     }
+                    //     // return $model->createMethod;
+                    //     if($model->createMethod == 'Api'){
+                    //         // $testResponse[1] = 'IF API - '.$model->createMethod.' ~~ '.$model->status.' ~~ '.$model->insurerName;
+                    //         // return $stateId;
+                    //         switch ($stateId) {
+                    //             case 1:
+                    //                 $curlUserid = 'axionkar';
+                    //                 break;
+                    //             case 2:
+                    //                 $curlUserid = 'axion';
+                    //                 break;
+                    //             case 3:
+                    //                 $curlUserid = 'axionker';
+                    //                 break;
+                    //             case 5:
+                    //                 $curlUserid = 'axionap';
+                    //             break;
+                    //             case 6:
+                    //                 $curlUserid = 'axion1';
+                    //             break;
+                    //             case 10:
+                    //                 $curlUserid = 'axionbr';
+                    //             break;
+                    //             case 14:
+                    //                 $curlUserid = 'axiondel';
+                    //             break;
+                    //             case 11:
+                    //                 $curlUserid = 'axionker';
+                    //             break;
+                    //             default:
+                    //                 $curlUserid = 'axion';
+                    //         }
             
-                            // return $curlUserid;
+                    //         // return $curlUserid;
             
-                            $postFields =  array(
-                                "leadID" => $model->contactPersonMobileNo,
-                                "vehicleRegistrationNo" => $model->registrationNo,
-                                "qcStatus" => $status,
-                                "zipArray" => $sendpath,
-                                "pdfArray1" => [],
-                                "pdfArray2" => [],
-                                "userID" => $curlUserid,
-                                "remark" => $model->remarks
-                            );
+                    //         $postFields =  array(
+                    //             "leadID" => $model->contactPersonMobileNo,
+                    //             "vehicleRegistrationNo" => $model->registrationNo,
+                    //             "qcStatus" => $status,
+                    //             "zipArray" => $sendpath,
+                    //             "pdfArray1" => [],
+                    //             "pdfArray2" => [],
+                    //             "userID" => $curlUserid,
+                    //             "remark" => $model->remarks
+                    //         );
             
-                            //   if($model->taigStatusRequest == '')
-                            //   {      
-                            $curl = curl_init();
+                    //         //   if($model->taigStatusRequest == '')
+                    //         //   {      
+                    //         $curl = curl_init();
             
-                            curl_setopt_array($curl, array(
-                                CURLOPT_URL => "https://tataaig.vahancheck.com/VCWebAPI/api/ExternalAgencyReport/Post", // Test URL - http://tataaiguat.vahancheck.com/VCWebAPI/api/ExternalAgencyReport/Post
-                                CURLOPT_RETURNTRANSFER => true,
-                                CURLOPT_ENCODING => "",
-                                CURLOPT_MAXREDIRS => 10,
-                                CURLOPT_TIMEOUT => 1000,
-                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                                CURLOPT_CUSTOMREQUEST => "POST",
-                                CURLOPT_POSTFIELDS => $postFields,
-                                CURLOPT_HTTPHEADER => array(
-                                    "authorization: Basic PuwoFFOP+Zr2wtaTjv9KnQ==",
-                                    "cache-control: no-cache",
-                                    "content-type: multipart/form-data"
-                                ),
-                            ));
+                    //         curl_setopt_array($curl, array(
+                    //             CURLOPT_URL => "https://tataaig.vahancheck.com/VCWebAPI/api/ExternalAgencyReport/Post", // Test URL - http://tataaiguat.vahancheck.com/VCWebAPI/api/ExternalAgencyReport/Post
+                    //             CURLOPT_RETURNTRANSFER => true,
+                    //             CURLOPT_ENCODING => "",
+                    //             CURLOPT_MAXREDIRS => 10,
+                    //             CURLOPT_TIMEOUT => 1000,
+                    //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    //             CURLOPT_CUSTOMREQUEST => "POST",
+                    //             CURLOPT_POSTFIELDS => $postFields,
+                    //             CURLOPT_HTTPHEADER => array(
+                    //                 "authorization: Basic PuwoFFOP+Zr2wtaTjv9KnQ==",
+                    //                 "cache-control: no-cache",
+                    //                 "content-type: multipart/form-data"
+                    //             ),
+                    //         ));
             
-                            $response = curl_exec($curl);
-                            $err = curl_error($curl);
+                    //         $response = curl_exec($curl);
+                    //         $err = curl_error($curl);
             
-                            curl_close($curl);
+                    //         curl_close($curl);
             
-                            $result = json_decode($response);
-                                            //   print_r($result->StatusCode); 
-                            $model->ErrorDesc = $result->ErrorDesc;
-                            $model->save();
+                    //         $result = json_decode($response);
+                    //                         //   print_r($result->StatusCode); 
+                    //         $model->ErrorDesc = $result->ErrorDesc;
+                    //         $model->save();
             
-                            if($result->RequestStatus == 'success' && $result->StatusCode == '111105')
-                            {
-                                if($model->load(Yii::$app->request->post()) )
-                                { 
-                                    $model->taigRequestStatus = 'Y';
-                                    $model->taigStatusCode = $result->StatusCode;
-                                    $model->ErrorDesc = $result->ErrorDesc;
-                                    $model->save();
+                    //         if($result->RequestStatus == 'success' && $result->StatusCode == '111105')
+                    //         {
+                    //             if($model->load(Yii::$app->request->post()) )
+                    //             { 
+                    //                 $model->taigRequestStatus = 'Y';
+                    //                 $model->taigStatusCode = $result->StatusCode;
+                    //                 $model->ErrorDesc = $result->ErrorDesc;
+                    //                 $model->save();
             
-                                    // Yii::$app->session->setFlash('Success','Upload successfully..!');
-                                    $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
-                                    // Remove zipfile copy
-                                    //unlink($zipFileCopy);
-                                }
-                            }
-                            else{
-                                $model->taigStatusCode = $result->StatusCode;
-                                $model->ErrorDesc = $result->ErrorDesc;
-                                $model->save();
-                                $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
-                                //Yii::$app->session->setFlash('Failure','Not Uploaded - Error Code:'.$result->StatusCode.' Error Message:'.$result->ErrorDesc);
-                                // Yii::$app->session->setFlash('Failure','Not Uploaded - Error Code:'.$result->StatusCode.' Error Message:'.$result->ErrorDesc.' curlUserid:'.$curlUserid.' stateId - '.json_encode($stateId));
-                            }
-                        }elseif($model->createMethod == 'New TataAgi Api' || $model->createMethod == ''){
-                            // $testResponse[2] = 'Else IF New TataAgi Api - '.$model->createMethod.' ~~ '.$model->status.' ~~ '.$model->insurerName;
+                    //                 // Yii::$app->session->setFlash('Success','Upload successfully..!');
+                    //                 $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
+                    //                 // Remove zipfile copy
+                    //                 //unlink($zipFileCopy);
+                    //             }
+                    //         }
+                    //         else{
+                    //             $model->taigStatusCode = $result->StatusCode;
+                    //             $model->ErrorDesc = $result->ErrorDesc;
+                    //             $model->save();
+                    //             $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
+                    //             //Yii::$app->session->setFlash('Failure','Not Uploaded - Error Code:'.$result->StatusCode.' Error Message:'.$result->ErrorDesc);
+                    //             // Yii::$app->session->setFlash('Failure','Not Uploaded - Error Code:'.$result->StatusCode.' Error Message:'.$result->ErrorDesc.' curlUserid:'.$curlUserid.' stateId - '.json_encode($stateId));
+                    //         }
+                    //     }elseif($model->createMethod == 'New TataAgi Api' || $model->createMethod == ''){
+                    //         // $testResponse[2] = 'Else IF New TataAgi Api - '.$model->createMethod.' ~~ '.$model->status.' ~~ '.$model->insurerName;
     
-                            switch ($stateId) {
-                                case 1:
-                                    $curlUserid = '8105741060';
-                                    $auth = '8e9e003b-5ef4-4abf-acf2-fca7168b54eb';
-                                    break;
-                                case 2:
-                                    $curlUserid = '8668095935';
-                                    $auth = '872f4d85-4083-4bb7-8be5-1cb82743d841';
-                                    break;
-                                case 3:
-                                    $curlUserid = '9072872233';
-                                    $auth = '479ec179-b5c8-44bc-8a50-bbb779e923c1';
-                                    break;
-                                case 5:
-                                    $curlUserid = '7330714466';
-                                    $auth = '0de3a3c2-9d98-441c-9fa8-43da27013a8e';
-                                break;
-                                default:
-                                    $curlUserid = '8105741060';
-                                    $auth = '8e9e003b-5ef4-4abf-acf2-fca7168b54eb';
-                            }
+                    //         switch ($stateId) {
+                    //             case 1:
+                    //                 $curlUserid = '8105741060';
+                    //                 $auth = '8e9e003b-5ef4-4abf-acf2-fca7168b54eb';
+                    //                 break;
+                    //             case 2:
+                    //                 $curlUserid = '8668095935';
+                    //                 $auth = '872f4d85-4083-4bb7-8be5-1cb82743d841';
+                    //                 break;
+                    //             case 3:
+                    //                 $curlUserid = '9072872233';
+                    //                 $auth = '479ec179-b5c8-44bc-8a50-bbb779e923c1';
+                    //                 break;
+                    //             case 5:
+                    //                 $curlUserid = '7330714466';
+                    //                 $auth = '0de3a3c2-9d98-441c-9fa8-43da27013a8e';
+                    //             break;
+                    //             default:
+                    //                 $curlUserid = '8105741060';
+                    //                 $auth = '8e9e003b-5ef4-4abf-acf2-fca7168b54eb';
+                    //         }
 
-                            // return $curlUserid;
+                    //         // return $curlUserid;
     
-                            $postFields =  array(
-                                "leadID" => $model->contactPersonMobileNo,
-                                "vehicleRegistrationNo" => $model->registrationNo,
-                                "qcStatus" => $status,
-                                "zipArray" => new \CurlFile($uploadPath, mime_content_type($uploadPath), basename($uploadPath)),
-                                "pdfArray1" => new \CurlFile($uploadPath, mime_content_type($uploadPath), basename($uploadPath)),
-                                "pdfArray2" => new \CurlFile($uploadPath, mime_content_type($uploadPath), basename($uploadPath)),
-                                "userID" => $curlUserid
-                            );
+                    //         $postFields =  array(
+                    //             "leadID" => $model->contactPersonMobileNo,
+                    //             "vehicleRegistrationNo" => $model->registrationNo,
+                    //             "qcStatus" => $status,
+                    //             "zipArray" => new \CurlFile($uploadPath, mime_content_type($uploadPath), basename($uploadPath)),
+                    //             "pdfArray1" => new \CurlFile($uploadPath, mime_content_type($uploadPath), basename($uploadPath)),
+                    //             "pdfArray2" => new \CurlFile($uploadPath, mime_content_type($uploadPath), basename($uploadPath)),
+                    //             "userID" => $curlUserid
+                    //         );
             
-                            //   if($model->taigStatusRequest == '')
-                            //   {      
-                            $curl = curl_init();
+                    //         //   if($model->taigStatusRequest == '')
+                    //         //   {      
+                    //         $curl = curl_init();
             
-                            curl_setopt_array($curl, array(
-                                CURLOPT_URL => "https://byomkeshmotorapi.tataaig.com/api/lob-specific/motor-claims/external-agency-report", // https://uatbyomkeshmotorapi.tataaig.com/api/lob-specific/motor-claims/external-agency-report // Test URL
-                                CURLOPT_RETURNTRANSFER => true,
-                                CURLOPT_ENCODING => "",
-                                CURLOPT_MAXREDIRS => 10,
-                                CURLOPT_TIMEOUT => 1000,
-                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                                CURLOPT_CUSTOMREQUEST => "POST",
-                                CURLOPT_POSTFIELDS => $postFields,
-                                CURLOPT_HTTPHEADER => array(
-                                    "x-api-key:".$auth
-                                ),
-                            ));
+                    //         curl_setopt_array($curl, array(
+                    //             CURLOPT_URL => "https://byomkeshmotorapi.tataaig.com/api/lob-specific/motor-claims/external-agency-report", // https://uatbyomkeshmotorapi.tataaig.com/api/lob-specific/motor-claims/external-agency-report // Test URL
+                    //             CURLOPT_RETURNTRANSFER => true,
+                    //             CURLOPT_ENCODING => "",
+                    //             CURLOPT_MAXREDIRS => 10,
+                    //             CURLOPT_TIMEOUT => 1000,
+                    //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    //             CURLOPT_CUSTOMREQUEST => "POST",
+                    //             CURLOPT_POSTFIELDS => $postFields,
+                    //             CURLOPT_HTTPHEADER => array(
+                    //                 "x-api-key:".$auth
+                    //             ),
+                    //         ));
             
-                            $response = curl_exec($curl);
-                            $err = curl_error($curl);
+                    //         $response = curl_exec($curl);
+                    //         $err = curl_error($curl);
     
-                            if($err){
-                                //Yii::$app->session->setFlash('Try Again','API - Error Message:'.json_encode($err));
-                                $this->log($model->contactPersonMobileNo,json_encode($err),json_encode($postFields));
-                            }
+                    //         if($err){
+                    //             //Yii::$app->session->setFlash('Try Again','API - Error Message:'.json_encode($err));
+                    //             $this->log($model->contactPersonMobileNo,json_encode($err),json_encode($postFields));
+                    //         }
             
-                            curl_close($curl);
+                    //         curl_close($curl);
             
-                            $result = json_decode($response);
+                    //         $result = json_decode($response);
     
-                            // return json_encode($result);
+                    //         // return json_encode($result);
     
-                            if(!$err && $result != null && $result->error == false){
-                                if($model->load(Yii::$app->request->post()) )
-                                { 
-                                    $model->taigRequestStatus = 'Y';
-                                    $model->taigStatusCode = 0;
-                                    $model->ErrorDesc = $result->message;
-                                    $model->save();    
-                                    // $testResponse[6] = $result;
-                                    // if (!Yii::$app->session->hasFlash('Success') || !Yii::$app->session->hasFlash('Failure')) {
-                                    //     Yii::$app->session->setFlash('Success','Upload successfully..!');
-                                    // }
-                                    $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
-                                    // Remove zipfile copy
-                                    //unlink($zipFileCopy);
-                                }
-                            }else{
-                                $model->taigStatusCode = $result->message;
-                                $model->ErrorDesc = $result->message;
-                                $model->save();
-                                // $testResponse[5] = $result;
-                                // if (!Yii::$app->session->hasFlash('Success') || !Yii::$app->session->hasFlash('Failure')) {
-                                //     if($result->message == 'Cannot change state to the existing state.'){
-                                //         Yii::$app->session->setFlash('Success','Upload successfully..! - Message: Files Already Uploaded');
-                                //     }else{
-                                //         Yii::$app->session->setFlash('Failure','Not Uploaded - Error Message:'.json_encode($result));
-                                //     }
-                                // }
-                                $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //sending sms to agent
-                        $this->sendSms($mobileno, $message);
-                    }
+                    //         if(!$err && $result != null && $result->error == false){
+                    //             if($model->load(Yii::$app->request->post()) )
+                    //             { 
+                    //                 $model->taigRequestStatus = 'Y';
+                    //                 $model->taigStatusCode = 0;
+                    //                 $model->ErrorDesc = $result->message;
+                    //                 $model->save();    
+                    //                 // $testResponse[6] = $result;
+                    //                 // if (!Yii::$app->session->hasFlash('Success') || !Yii::$app->session->hasFlash('Failure')) {
+                    //                 //     Yii::$app->session->setFlash('Success','Upload successfully..!');
+                    //                 // }
+                    //                 $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
+                    //                 // Remove zipfile copy
+                    //                 //unlink($zipFileCopy);
+                    //             }
+                    //         }else{
+                    //             $model->taigStatusCode = $result->message;
+                    //             $model->ErrorDesc = $result->message;
+                    //             $model->save();
+                    //             // $testResponse[5] = $result;
+                    //             // if (!Yii::$app->session->hasFlash('Success') || !Yii::$app->session->hasFlash('Failure')) {
+                    //             //     if($result->message == 'Cannot change state to the existing state.'){
+                    //             //         Yii::$app->session->setFlash('Success','Upload successfully..! - Message: Files Already Uploaded');
+                    //             //     }else{
+                    //             //         Yii::$app->session->setFlash('Failure','Not Uploaded - Error Message:'.json_encode($result));
+                    //             //     }
+                    //             // }
+                    //             $this->log($model->contactPersonMobileNo,json_encode($result),json_encode($postFields));
+                    //         }
+                    //     }
+                    // }
+                    // else
+                    // {
+                    // }
+                    //sending sms to agent
+                    $this->sendSms($mobileno, $message);
 
                     if($callerEmail != '')
                     {
@@ -4905,13 +4613,13 @@ class AxionPreinspectionController extends Controller
                             ->setSubject($emailSubject);
                             $smailer->send();
 
-                            if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
-                            {
-                                $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
-                                ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
-                                ->setSubject($emailSubject);
-                                $smailer->send();
-                            }
+                            // if ($model->insurerName == 10 || $model->insurerName == "ROYAL SUNDARAM GENERAL INSURANCE CO. LTD.")
+                            // {
+                            //     $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
+                            //     ->setTo(@$insuredUser->email) //manual.PI@godigit.com mythili.gopi@axionpcs.in
+                            //     ->setSubject($emailSubject);
+                            //     $smailer->send();
+                            // }
                         }
                     }
                 }
@@ -5399,7 +5107,8 @@ class AxionPreinspectionController extends Controller
                 $model->uploadPath = $name;
                 $model->conveyanceApprovalImg = $conveyanceApprovalImg;
                 $model->save();
-                if($model->insurerName == 5 && ($model->status ==  101 || $model->status == 102))
+                // if($model->insurerName == 5 && ($model->status ==  101 || $model->status == 102))
+                if($model->status ==  101 || $model->status == 102)
                 {
                     // $testResponse[0] = 'IF - '.$model->createMethod.' ~~ '.$model->status.' ~~ '.$model->insurerName;
                     if($model->status ==  101)
