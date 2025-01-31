@@ -29,9 +29,9 @@ class CronController extends Controller
         }
         foreach ($selectedFolders as $selectedFolder)
         {
-            $localSource = '/var/www/veyes/' . $selectedFolder;
-            $s3Destination = 's3://axion-preinspection/' . $selectedFolder;
-            $regex = 's3:\/\/axion-preinspection\/' . $selectedFolder;
+            $localSource = '/var/www/sitara-pi/' . $selectedFolder;
+            $s3Destination = 's3://sitara-preinspection/' . $selectedFolder;
+            $regex = 's3:\/\/sitara-preinspection\/' . $selectedFolder;
     
             $files = glob($localSource.'/*');
             
