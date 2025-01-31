@@ -29,7 +29,7 @@ class CronController extends Controller
         }
         foreach ($selectedFolders as $selectedFolder)
         {
-            $localSource = '/var/www/veyes/' . $selectedFolder;
+            $localSource = '/var/www/preinspection/' . $selectedFolder;
             $s3Destination = 's3://axion-preinspection/' . $selectedFolder;
             $regex = 's3:\/\/axion-preinspection\/' . $selectedFolder;
     
@@ -83,7 +83,7 @@ class CronController extends Controller
     }
 
     private function deleteFiles($files) {    
-        if ($files == '/var/www/veyes/api-uploads')
+        if ($files == '/var/www/preinspection/api-uploads')
             $duration = '0';
         else
             $duration = '2';
