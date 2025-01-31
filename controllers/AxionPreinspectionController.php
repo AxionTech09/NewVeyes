@@ -6239,4 +6239,80 @@ class AxionPreinspectionController extends Controller
         return "ffmpeg -i $qcuploadFile -vf scale=1280:-2 -c:v libx264 -crf 23 -c:a aac -b:a 128k $compressedFile";
     }
 
+    public function actionMigrateData()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (!isset(Yii::$app->dbVeyes) || !isset(Yii::$app->db)) {
+            return ['status' => 'Database connections are not configured properly'];
+        }
+
+        $dbVeyes = Yii::$app->dbVeyes; // Source database (server2_v2_veyes)
+        $dbPreinspection = Yii::$app->db; // Destination database (server2_v2_preinspection)
+
+        // Get IDs of records in dbPreinspection with migration = 'N'
+        $existingIds = $dbPreinspection->createCommand("
+            SELECT id FROM axion_preinspection WHERE migration = 'N'
+            LIMIT 10
+        ")->queryColumn(); // Fetches array of IDs
+
+        if (empty($existingIds)) {
+            return ['status' => 'No new data to migrate'];
+        }
+
+        // Fetch corresponding data from dbVeyes that matches the selected IDs
+        $preinspections = $dbVeyes->createCommand("
+            SELECT * FROM axion_preinspection 
+            WHERE id IN (" . implode(',', $existingIds) . ")
+        ")->queryAll();
+
+        if (empty($preinspections)) {
+            return ['status' => 'No matching data found in source database'];
+        }
+
+        foreach ($preinspections as $preinspection) {
+            $preinspectionId = $preinspection['id'];
+
+            // List of related tables to migrate
+            $tables = [
+                'axion_preinspection_commercialwheeler',
+                'axion_preinspection_fwheeler',
+                'axion_preinspection_vehicle',
+                'axion_preinspection_twowheeler',
+                'axion_preinspection_photos',
+            ];
+
+            foreach ($tables as $table) {
+                // Fetch related records from source DB
+                $data = $dbVeyes->createCommand("
+                    SELECT * FROM {$table} WHERE preinspection_id = :id
+                ")->bindValue(':id', $preinspectionId)->queryAll();
+
+                foreach ($data as $row) {
+                    unset($row['id']); // Remove primary key for new insert
+
+                    // Check if data already exists in dbPreinspection
+                    $existingData = $dbPreinspection->createCommand("
+                        SELECT * FROM {$table} WHERE preinspection_id = :id
+                    ")->bindValue(':id', $preinspectionId)->queryOne();
+
+                    if ($existingData) {
+                        // Update existing record
+                        $dbPreinspection->createCommand()->update($table, $row, 'preinspection_id = :id', [':id' => $preinspectionId])->execute();
+                    } else {
+                        // Insert new record
+                        $dbPreinspection->createCommand()->insert($table, $row)->execute();
+                    }
+                }
+            }
+
+            // Update migration status to 'Y' in dbPreinspection
+            $dbPreinspection->createCommand("
+                UPDATE axion_preinspection SET migration = 'Y' WHERE id = :id
+            ")->bindValue(':id', $preinspectionId)->execute();
+        }
+
+        return ['status' => 'Migration completed'];
+    }
+
 }
