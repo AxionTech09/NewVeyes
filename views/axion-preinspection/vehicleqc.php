@@ -1253,7 +1253,14 @@ $s3BaseUrl = \Yii::$app->params['s3Bucket'].'.s3.'.\Yii::$app->params['s3Region'
   <?php echo Html::hiddenInput('bLong', '', ['id' => 'bLong']); ?>
 
   <div class="form-group" style="text-align: center;margin-top: 30px;">
-    <?= Html::submitButton('Save', ['class' => 'btn btn-primary', 'id' => 'savebtn']) ?>
+  <?php
+    $currentDateTime = new DateTime();
+    $endOfJanuary = new DateTime('2025-01-31 23:59:59');
+
+    if ($currentDateTime <= $endOfJanuary): ?>
+        <?= Html::submitButton('Save', ['class' => 'btn btn-primary', 'id' => 'savebtn']) ?>
+    <?php endif;
+    ?>
     <!-- <?= Html::a('Submit and Generate Report', '#', ['class' => 'btn btn-primary']) ?> -->
 
     <?php if ($role != 'Customer' && $role != '') { ?>
