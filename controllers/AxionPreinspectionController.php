@@ -6258,9 +6258,6 @@ class AxionPreinspectionController extends Controller
 
         if (empty($existingIds)) {
             return ['status' => 'No new data to migrate'];
-        }else{
-            
-            return ['status' => 'new data to migrate'];
         }
 
         // Fetch corresponding data from dbVeyes that matches the selected IDs
@@ -6271,10 +6268,6 @@ class AxionPreinspectionController extends Controller
 
         if (empty($preinspections)) {
             return ['status' => 'No matching data found in source database'];
-        }
-        else{
-            
-            return ['status' => 'matching data found in source database'];
         }
 
         foreach ($preinspections as $preinspection) {
