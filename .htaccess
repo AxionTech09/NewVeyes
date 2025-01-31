@@ -3,16 +3,22 @@ IndexIgnore */*
 
 RewriteEngine on
 
-# if a directory or a file exists, use it directly
+# Ensure Authorization header is passed to PHP
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule ^(.*)$ - [E=HTTP_AUTHORIZATION:%1]
+
+# If a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# otherwise forward it to index.php
+# Otherwise, forward it to index.php
 RewriteRule . index.php
 
-#RewriteCond %{HTTPS} off
-#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Enforce HTTPS (uncomment if needed)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-RewriteCond %{HTTP_HOST} ^veyes\.axionpcs\.in$ [NC]
+# Redirect qcphotos MP4 requests to S3 bucket
+RewriteCond %{HTTP_HOST} ^preinspection\.axionpcs\.in$ [NC]
 RewriteCond %{REQUEST_URI} ^/qcphotos/(.+)\.mp4$ [NC]
 RewriteRule ^(.*)$ https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/%1.mp4 [L,R=301]
