@@ -6315,4 +6315,53 @@ class AxionPreinspectionController extends Controller
         return ['status' => 'Migration completed'];
     }
 
+    public function actionInsertPhotos()
+    {
+        // Define the required photo types
+        $photoTypes = [
+            'chassisThumb', 'frontViewNumberPlate', 'enginePhoto', 'frontBumper',
+            'frontLeftCorner45', 'leftSideFullView', 'leftQtrPanel', 'rearViewImage',
+            'rearBumper', 'dickyOpenImage', 'cngLpgKit', 'underChassis', 'rightQtrPanel',
+            'rightSideFullView', 'frontRightCorner45', 'chassisPlate', 'dashBoardPhoto',
+            'odometerReading', 'odometerWithRPMReading', 'closeupViewOfOdometerReading',
+            'frontWindshieldFromOutside', 'rcCopy', 'rcImageBack', 'preInsuranceCopy',
+            'dentsScratchImage1', 'dentsScratchImage2', 'dentsScratchImage3', 'vehicleVideo'
+        ];
+
+        // Fetch pre-inspections with status 0,1,12
+        $preInspections = AxionPreinspection::find()
+            ->select(['id', 'referenceNo'])
+            ->where(['referenceNo' => 205221])
+            ->asArray()
+            ->all();
+
+        foreach ($preInspections as $preInspection) {
+            $preinspectionId = $preInspection['id'];
+
+            // Get existing types for the current preinspection
+            $existingTypes = AxionPreinspectionPhotos::find()
+                ->select('type')
+                ->where(['preinspection_id' => $preinspectionId])
+                ->indexBy('type')
+                ->column();
+
+            // Check for missing types
+            $missingTypes = array_diff($photoTypes, array_keys($existingTypes));
+            $currentDateTime = date('Y-m-d H:i:s');
+            foreach ($missingTypes as $type) {
+                $photo = new AxionPreinspectionPhotos();
+                $photo->preinspection_id = $preinspectionId;
+                $photo->type = $type;
+                $photo->created_on = $currentDateTime;
+                if($photo->save())
+                {
+                    echo "saved ".$type.'<br. ';
+                }else{
+                    echo "Not saved ".$type.'<br. ';
+                }
+            }
+        }
+
+    }
+
 }
