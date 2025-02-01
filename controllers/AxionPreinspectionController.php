@@ -1163,6 +1163,12 @@ class AxionPreinspectionController extends Controller
         if(count($commercialwheelermodel) <= 0){
             $commercialwheelermodel = new AxionPreinspectionCommercialwheeler();
         }
+
+        if ($loaded = $premodel->load(Yii::$app->request->post())) {
+            $appData = Yii::$app->request->post('AxionPreinspection');
+            $intimationDate = $appData['intimationDate'];
+            $premodel->intimationDate = $intimationDate;
+        }
         
         $valuator = User::find()
         ->join('LEFT JOIN','auth_assignment','auth_assignment.user_id = id')
