@@ -424,10 +424,10 @@ $gridColumns = [
                     ]).'</div>';  
                 }
             },
-            '`vehicleqc`' => function ($url, $model, $key) {
+            'vehicleqc' => function ($url, $model, $key) {
 
                 $role = array_keys(Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId()))[0] ;
-                if($role=="Admin" || $role=="Superadmin" || $role == 'Veyes UAT' || $role == 'BO User')
+                if($role=="Admin" || $role=="Superadmin" || $role == 'Veyes UAT'  || $role == 'BO User')
                 {
                     $display='display:inline-block';
                 }
