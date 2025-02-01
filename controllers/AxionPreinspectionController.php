@@ -1210,14 +1210,17 @@ class AxionPreinspectionController extends Controller
         $twowheelermodel = AxionPreinspectionTwowheeler::findOne(['preinspection_id' => $id]);
         if(count($twowheelermodel) <= 0){
             $twowheelermodel = new AxionPreinspectionTwowheeler();
+            $twowheelermodel->preinspection_id = $premodel->id;
         }
         $fwheelermodel = AxionPreinspectionFwheeler::findOne(['preinspection_id' => $id]);
         if(count($fwheelermodel) <= 0){
             $fwheelermodel = new AxionPreinspectionFwheeler();
+            $fwheelermodel->preinspection_id = $premodel->id;
         }
         $commercialwheelermodel = AxionPreinspectionCommercialwheeler::findOne(['preinspection_id' => $id]);
         if(count($commercialwheelermodel) <= 0){
             $commercialwheelermodel = new AxionPreinspectionCommercialwheeler();
+            $commercialwheelermodel->preinspection_id = $premodel->id;
         }
         
         $valuator = User::find()
@@ -1423,7 +1426,6 @@ class AxionPreinspectionController extends Controller
             && $fwheelermodel->load(Yii::$app->request->post()) && $commercialwheelermodel->load(Yii::$app->request->post())) {     
             //$premodel->completedSurveyDateTime = $completedSurveyDateTime;
             $premodel->customerAppointDateTime = $customerAppointDateTime;
-
             if ( ($role != 'Admin' && $role != 'Superadmin') || $premodel->insurerName == 9)
                 $premodel->updatedBy = Yii::$app->user->identity->id;
 
