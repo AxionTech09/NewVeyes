@@ -83,7 +83,7 @@ class CronController extends Controller
     }
 
     private function deleteFiles($files) {    
-        if ($files == '/var/www/sitara-pi/api-uploads')
+        if ($files == '/var/www/veyes/api-uploads')
             $duration = '0';
         else
             $duration = '2';
