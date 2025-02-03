@@ -5967,8 +5967,7 @@ class AxionPreinspectionController extends Controller
 
         // Get IDs of records in dbPreinspection with migration = 'N'
         $existingIds = $dbPreinspection->createCommand("
-            SELECT id FROM axion_preinspection WHERE migration = 'N'
-            LIMIT 10
+            SELECT id FROM axion_preinspection WHERE referenceNo = 53814
         ")->queryColumn(); // Fetches array of IDs
 
         if (empty($existingIds)) {
