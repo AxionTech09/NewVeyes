@@ -6029,8 +6029,9 @@ class AxionPreinspectionController extends Controller
         return ['status' => 'Migration completed'];
     }
 
-    public function actionInsertPhotos()
+    public function actionInsertPhotos($id)
     {
+        $refno = $id; 
         // Define the required photo types
         $photoTypes = [
             'chassisThumb', 'frontViewNumberPlate', 'enginePhoto', 'frontBumper',
@@ -6045,7 +6046,7 @@ class AxionPreinspectionController extends Controller
         // Fetch pre-inspections with status 0,1,12
         $preInspections = AxionPreinspection::find()
             ->select(['id', 'referenceNo'])
-            ->where(['referenceNo' => 205221])
+            ->where(['referenceNo' => $refno])
             ->asArray()
             ->all();
 
