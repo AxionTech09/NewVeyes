@@ -146,7 +146,7 @@ $s3BaseUrl = \Yii::$app->params['s3Bucket'].'.s3.'.\Yii::$app->params['s3Region'
               <?= $form->field($premodel, 'referenceNo')->textInput(['readonly' => true, 'maxlength' => true]) ?>
             </div>
 
-            <?php if ($role == 'Admin' || $role == 'Superadmin') { ?>
+            <?php if ($role == 'Admin' || $role == 'Superadmin' || $role == 'BO User') { ?>
               <div class="col-lg-6">
                 <?= $form->field($premodel, 'intimationDate')->widget(DateControl::classname(), [
                   'type' => DateControl::FORMAT_DATETIME,  'options' => [
@@ -330,7 +330,7 @@ $s3BaseUrl = \Yii::$app->params['s3Bucket'].'.s3.'.\Yii::$app->params['s3Region'
 
             <?php } ?>
 
-            <?php if ($role == 'Superadmin' || $role == 'Admin') { ?>
+            <?php if ($role == 'Superadmin' || $role == 'Admin' || $role == 'BO User') { ?>
               <div class="col-lg-6" style="color:red;">
                 <?= $form->field($premodel, 'contactPersonMobileNo')->textInput(['maxlength' => true])->label('Unique Lead Number*') ?>
               </div>
