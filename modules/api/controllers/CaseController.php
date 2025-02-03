@@ -2295,9 +2295,9 @@ class CaseController extends Controller
                 $error[] = "VIR case number is required";
             }
 
-            if(!isset($params->initiator_region) || ($params->initiator_region=="") ){
-                $error[] = "Initiator region is required";
-            }
+            // if(!isset($params->initiator_region) || ($params->initiator_region=="") ){
+            //     $error[] = "Initiator region is required";
+            // }
 
             if(!isset($params->initiator_branch) || ($params->initiator_branch=="") ){
                 $error[] = "Initiator branch is required";
