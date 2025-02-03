@@ -2828,7 +2828,7 @@ return $html;
                             if (file_exists($qcuploadFile)){
                                 $Image = sprintf('./qcphotos/%s',$upload->image);
                             }else{
-                                $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+                                $Image = 'https://axion-veyes.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
                             }
                             if($file == 'vehicleVideo'){
                                 $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
@@ -10141,7 +10141,7 @@ protected function updateQc1($preModel,$updateType)
                             if (file_exists($qcuploadFile)){
                                 $Image = sprintf('./qcphotos/%s',$upload->image);
                             }else{
-                                $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+                                $Image = 'https://axion-veyes.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
                             }
                             if($file == 'vehicleVideo'){
                                 $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
@@ -11205,7 +11205,7 @@ protected function updateQc1($preModel,$updateType)
                            if (file_exists($qcuploadFile)){
                                $Image = sprintf('./qcphotos/%s',$upload->image);
                            }else{
-                               $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+                               $Image = 'https://axion-veyes.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
                            }
                            if($file == 'vehicleVideo'){
                                $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
