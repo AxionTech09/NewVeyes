@@ -234,7 +234,8 @@ $s3BaseUrl = \Yii::$app->params['s3Bucket'].'.s3.'.\Yii::$app->params['s3Region'
             ?>
 
             <div class="col-lg-6" style="color:red;">
-              <?= $form->field($premodel, 'registrationNo')->textInput(['readonly' => $readOnly]) ?>
+              <!-- <?= $form->field($premodel, 'registrationNo')->textInput(['readonly' => $readOnly]) ?> -->
+              <?= $form->field($premodel, 'registrationNo') ?>
             </div>
               
             <div class="col-lg-6" style="color:red;">
