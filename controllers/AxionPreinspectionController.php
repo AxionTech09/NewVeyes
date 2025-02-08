@@ -1709,6 +1709,143 @@ class AxionPreinspectionController extends Controller
                                 
             if($premodel->insurerName == 12)
             {
+                $digit_username = \Yii::$app->params['digit_username']; 
+                $digit_passcode = \Yii::$app->params['digit_passcode'];
+                $digit_integration_id = \Yii::$app->params['digit_integration_id'];
+                $accessapiUrl = \Yii::$app->params['accessapiUrl'];
+                $digit_status_update_api = \Yii::$app->params['digit_status_update_api'];
+                $client = new Client();
+                $response = $client->createRequest()
+                    ->setMethod('POST')
+                    ->setUrl($this->apiUrl)
+                    ->addHeaders(['Content-Type' => 'application/json'])
+                    ->setContent(json_encode([
+                        'username' => $digit_username,
+                        'password' => $digit_passcode,
+                    ]))
+                    ->send();
+
+                if ($response->isOk) {
+                    $bearerToken = $response->data['access_token']; // access_token
+                    $url = $digit_status_update_api;
+                    $integrationId = $digit_integration_id; // Godigit integration ID
+
+                    $payload = [
+                        "partnerName" => "Axion",
+                        "partnerCode" => "XXX",
+                        "piStatus" => "Not Recommended",
+                        "referenceNo" => "AX0022131111111",
+                        "insurerName" => "GO DIGIT GENERAL INSURANCE LIMITED",
+                        "divisionName" => "PAN INDIA",
+                        "branchName" => "PAN INDIA",
+                        "smName" => "",
+                        "agencyName" => "0",
+                        "vehicleRegNo" => "MH15CTXXXX",
+                        "insurerRefNo" => "D14664XXXX",
+                        "insuredName" => "KOTHULE SHASHIKANT",
+                        "insuredAddress" => "9999999999  City center mall Nashik",
+                        "insuredMobile" => "9999999999",
+                        "contactMobile" => "9999999999",
+                        "agentMobile" => "9999999999",
+                        "agentCode" => "",
+                        "agentName" => "LANDMARK XXXXX",
+                        "agentEmail" => "XXXXemail.com",
+                        "vehicleCategory" => "Two Wheeler",
+                        "makeName" => "XXXX",
+                        "modelName" => "XXXX",
+                        "manufactYear" => "0",
+                        "inspectedLocation" => "9999999999  City center mall Nashik",
+                        "inspectedType" => "BREAK-IN",
+                        "intimationDate" => "DD/MM/YYYY",
+                        "engineNo" => "BDXXXX",
+                        "chassisNo" => "BDXXXX",
+                        "manualReportOn" => "GODIGIT_ONLINE",
+                        "vehicleLocation" => "Others",
+                        "frontNoPlate" => "Yes",
+                        "rearNoPlate" => "Yes",
+                        "fuel" => "Diesel",
+                        "color" => "WHITE",
+                        "odoMeter" => "118244",
+                        "marketValue" => "0",
+                        "rcverified" => "Yes",
+                        "couponDelivery" => "",
+                        "typeOfBody" => "",
+                        "stereoMake" => "0",
+                        "extraFittings" => "",
+                        "customerOccupation" => "0",
+                        "residence" => "Apartment",
+                        "customerAge" => "20-30",
+                        "numberOfCarsOwned" => "1",
+                        "vehicleParked" => "No Car Park / Parked on road",
+                        "securityOfVehicle" => "No",
+                        "relationship" => "Self",
+                        "maintenance" => "",
+                        "vehicleTimeOfInspection" => "",
+                        "headLamp" => "Safe",
+                        "frontIndicatorLightLT" => "Safe",
+                        "frontIndicatorLightRT" => "Safe",
+                        "frontMudguard" => "Scratch",
+                        "frontRimAlloy" => "Safe",
+                        "frontShockAbsorber" => "Safe",
+                        "frontTyre" => "Safe",
+                        "frontHubDiskDrum" => "Safe",
+                        "legShield" => "Safe",
+                        "frontNose" => "Safe",
+                        "handleBar" => "Safe",
+                        "fuelTank" => "Safe",
+                        "seat" => "Safe",
+                        "silencer" => "Safe",
+                        "fork" => "Safe",
+                        "ltCoverShield" => "Safe",
+                        "rtCoverShield" => "Safe",
+                        "ltSideFloor" => "Safe",
+                        "rtSideFloor" => "Safe",
+                        "tailLamp" => "Safe",
+                        "rearIndicatorLightLT" => "Safe",
+                        "indicatorLightRT" => "Safe",
+                        "rearMudguard" => "Safe",
+                        "rearRimAlloy" => "Safe",
+                        "rearShockAbsorber" => "Safe",
+                        "rearTyre" => "Safe",
+                        "rearCowl" => "Safe",
+                        "remarks" => "RC SEEN, SCRATCH DENTED IN VEHICLE, AIRBAG WARNING SHOWN, FRONT BUMPER BROKEN, AIRBAG NOT WORKING",
+                        "updatedContact" => "",
+                        "chp" => "S3 link",
+                        "rcb1" => "S3 link",
+                        "rcb2" => "S3 link",
+                        "rs" => "S3 link",
+                        "bs" => "S3 link",
+                        "ls" => "S3 link",
+                        "fs" => "S3 link",
+                        "report_pdf_url" => "S3 link",
+                        "video" => "S3 link",
+                        "isVideoPIEligible" => false,
+                        "includePendingData" => false,
+                        "blockCustomerCommunication" => false,
+                        "pendingRequestAllowed" => false
+                    ];
+
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $bearerToken,
+                        'integrationId: ' . $integrationId
+                    ]);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, Json::encode($payload));
+
+                    $response = curl_exec($ch);
+                    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+
+                    return $this->asJson([
+                        'status' => $httpcode,
+                        'response' => Json::decode($response),
+                    ]);
+                } else {
+                    return null; // Handle error case
+                }
                 $pdfFile = getcwd().'/api-uploads/pdf/'.$id.'.pdf';
                 if($smailer)
                     $smailer->setFrom(['axion.technicalservices@axionpcs.in' => 'No-reply@Axion'])
@@ -1730,7 +1867,19 @@ class AxionPreinspectionController extends Controller
                             if (file_exists($qcuploadFile)){
                                 $Image = sprintf('./qcphotos/%s',$upload->image);  
                             }else{
-                                $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
+                                $s3file = 'https://'.\Yii::$app->params['s3Bucket'].'.s3.'.\Yii::$app->params['s3Region'].'.amazonaws.com/'.$upload->image;
+                    
+                                $s3FileExists =  S3Helper::fileExists($s3file);
+
+                                if ($s3FileExists['status'])
+                                {
+                                    $Image = $s3FileExists['data']['url'];
+                                }
+                                else
+                                {
+                                    $Image = Yii::$app->urlManager->createAbsoluteUrl($upload->image);
+                                }
+                                // $Image = 'https://axion-preinspection.s3.ap-south-1.amazonaws.com/qcphotos/'.$upload->image;
                             }
                             if($file == 'vehicleVideo'){
                                 $smailer->attach($Image, ['fileName' => $x_value,'contentType' => 'video/mp4']);
